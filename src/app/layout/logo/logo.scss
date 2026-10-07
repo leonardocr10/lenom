@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.symbol {
+  position: relative;
+  width: 28px;
+  height: 28px;
+
+  i {
+    position: absolute;
+    left: 2px;
+    border-radius: 3px;
+  }
+
+  .bar-v {
+    top: 0;
+    width: 9px;
+    height: 28px;
+    background: var(--green-brand);
+    transform: skewX(-8deg);
+  }
+
+  .bar-h {
+    bottom: 0;
+    width: 26px;
+    height: 9px;
+    background: var(--navy-brand);
+  }
+}
+
+.word {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.item {
+  display: inline-flex;
+  align-items: baseline;
+  padding: 8px 0;
+}
+
+.ch,
+.ai {
+  font: 700 23px var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.ch {
+  color: var(--navy-brand);
+  transition: color 0.3s;
+}
+
+.ai {
+  color: var(--green-brand);
+}
+
+.suffix {
+  display: inline-block;
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  margin-right: 0;
+  font: 500 17px var(--font-display);
+  color: var(--text-2);
+  transition:
+    max-width 0.5s var(--ease),
+    opacity 0.35s ease,
+    margin 0.5s var(--ease);
+}
+
+.item.active {
+  .ch {
+    color: var(--green);
+  }
+
+  .suffix {
+    max-width: 160px;
+    opacity: 1;
+    margin-right: 4px;
+  }
+
+  &:nth-last-child(2) .suffix {
+    margin-right: 0;
+  }
+}
+
+@media (hover: none) {
+  .suffix {
+    display: none;
+  }
+}

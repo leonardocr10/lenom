@@ -1,0 +1,159 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+header {
+  background: rgba(255, 255, 255, 0);
+  border-bottom: 1px solid rgba(255, 255, 255, 0);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition:
+    background 0.3s,
+    border-color 0.3s;
+
+  &.scrolled {
+    background: rgba(255, 255, 255, 0.86);
+    border-bottom-color: #e6ede8;
+  }
+}
+
+.bar {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+
+  a {
+    font-size: 14px;
+    font-weight: 600;
+    color: #24384b;
+
+    &:hover {
+      color: var(--green);
+    }
+  }
+}
+
+.cta {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: var(--green-brand);
+  color: var(--navy-ink);
+  font-weight: 700;
+  font-size: 14px;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+
+  &:hover {
+    color: var(--navy-ink);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -8px rgba(92, 203, 99, 0.6);
+  }
+}
+
+.burger,
+.mobile {
+  display: none;
+}
+
+@media (max-width: 999px) {
+  .nav {
+    display: none;
+  }
+
+  .burger {
+    flex: none;
+    display: grid;
+    gap: 4px;
+    align-content: center;
+    justify-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border-radius: 10px;
+    border: 1px solid #cfdcd3;
+    background: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+
+    i {
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--navy-ink);
+    }
+  }
+
+  .bar {
+    gap: 12px;
+  }
+
+  .cta {
+    margin-left: auto;
+  }
+
+  .mobile {
+    display: grid;
+    padding: 4px 32px 20px;
+
+    a {
+      padding: 14px 0;
+      border-top: 1px solid var(--border);
+      font-size: 15px;
+      font-weight: 600;
+      color: #24384b;
+    }
+
+    .menu-cta {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  .bar {
+    padding: 0 20px;
+  }
+
+  .bar > .cta {
+    display: none;
+  }
+
+  .burger {
+    margin-left: auto;
+  }
+
+  .mobile {
+    padding: 4px 20px 20px;
+
+    .menu-cta {
+      display: block;
+      margin-top: 8px;
+      padding: 14px;
+      border-radius: 10px;
+      border-top: none;
+      background: var(--green-brand);
+      color: var(--navy-ink);
+      text-align: center;
+      font-weight: 700;
+    }
+  }
+}

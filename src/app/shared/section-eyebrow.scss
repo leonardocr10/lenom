@@ -1,0 +1,27 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.2em;
+  color: var(--green);
+}
+
+.mark {
+  display: flex;
+  gap: 3px;
+
+  i {
+    width: 5px;
+    height: 12px;
+    transform: skewX(-18deg);
+
+    &:first-child {
+      background: var(--green-brand);
+    }
+
+    &:last-child {
+      background: var(--navy-brand);
+    }
+  }
+}

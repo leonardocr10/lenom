@@ -1,0 +1,29 @@
+<header [class.scrolled]="scrolled() || menuOpen()">
+  <div class="bar">
+    <app-logo />
+    <nav class="nav" aria-label="Principal">
+      @for (item of nav; track $index) {
+        <a [href]="item.href">{{ item.label }}</a>
+      }
+    </nav>
+    <a class="cta" href="#contato">Solicitar orçamento <span>→</span></a>
+    <button
+      class="burger"
+      type="button"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="mobile-menu"
+      aria-label="Abrir menu"
+      (click)="toggleMenu()"
+    >
+      <i></i><i></i><i></i>
+    </button>
+  </div>
+  @if (menuOpen()) {
+    <nav id="mobile-menu" class="mobile" aria-label="Principal (mobile)">
+      @for (item of nav; track $index) {
+        <a [href]="item.href" (click)="closeMenu()">{{ item.label }}</a>
+      }
+      <a class="menu-cta" href="#contato" (click)="closeMenu()">Solicitar orçamento →</a>
+    </nav>
+  }
+</header>

@@ -1,0 +1,258 @@
+section {
+  padding: 112px 0;
+  background: #fff;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  gap: 56px;
+  align-items: start;
+}
+
+h2 {
+  margin: 18px 0 0;
+  font: 700 clamp(34px, 4vw, 50px) / 1.08 var(--font-display);
+  letter-spacing: -0.025em;
+  color: var(--navy-ink);
+
+  span {
+    color: var(--green);
+  }
+}
+
+.sub {
+  margin: 16px 0 0;
+  font-size: 17px;
+  color: #55667a;
+}
+
+.cards {
+  display: grid;
+  gap: 10px;
+  margin-top: 34px;
+}
+
+.card {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--mint-3);
+  color: var(--green);
+  font: 500 11px var(--font-mono);
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--navy-ink);
+}
+
+.card-text {
+  font-size: 14px;
+  color: #5b6b7b;
+}
+
+.panel {
+  padding: 36px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: #fbfdfb;
+  box-shadow: 0 30px 60px -40px rgba(14, 42, 71, 0.35);
+}
+
+.form {
+  display: grid;
+  gap: 18px;
+}
+
+.two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+label,
+.field {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy-ink);
+}
+
+.optional {
+  font-weight: 500;
+  color: #6b7b8b;
+}
+
+input:not([type='checkbox']),
+textarea {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #dce6df;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--navy-ink);
+  transition: all 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 4px rgba(46, 139, 59, 0.12);
+  }
+
+  &.error {
+    border-color: #c8463b;
+
+    &:focus {
+      box-shadow: 0 0 0 4px rgba(200, 70, 59, 0.12);
+    }
+  }
+}
+
+textarea {
+  resize: vertical;
+}
+
+.msg {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #b23a30;
+}
+
+.topics {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.topic {
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid #dce6df;
+  background: #fff;
+  color: #24384b;
+  font: 600 13px var(--font-body);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &.on {
+    border-color: var(--navy-brand);
+    background: var(--navy-brand);
+    color: #fff;
+  }
+}
+
+.privacy-wrap {
+  display: grid;
+  gap: 6px;
+}
+
+.privacy {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 400;
+  color: #24384b;
+
+  input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--green);
+  }
+}
+
+.submit-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.submit {
+  padding: 16px 28px;
+  border: none;
+  border-radius: 12px;
+  background: var(--green);
+  color: #fff;
+  font: 700 15px var(--font-body);
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -12px rgba(46, 139, 59, 0.7);
+  }
+}
+
+.hint {
+  font-size: 13px;
+  color: #6b7b8b;
+}
+
+.success {
+  padding: 48px 8px;
+  text-align: center;
+
+  .check {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: var(--green-brand);
+    color: var(--navy-ink);
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .success-title {
+    margin-top: 18px;
+    font: 700 24px var(--font-display);
+    color: var(--navy-ink);
+  }
+
+  p {
+    margin: 8px 0 22px;
+    font-size: 15px;
+    color: #55667a;
+  }
+}
+
+.again {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--green);
+  background: transparent;
+  color: var(--green);
+  font: 700 14px var(--font-body);
+  cursor: pointer;
+}
+
+@media (max-width: 520px) {
+  section {
+    padding: 80px 0;
+  }
+
+  .panel {
+    padding: 24px 20px;
+  }
+}

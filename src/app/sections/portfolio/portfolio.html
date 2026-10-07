@@ -1,0 +1,25 @@
+<section id="portfolio">
+  <div class="container">
+    <div class="head" appReveal>
+      <app-eyebrow>PORTFÓLIO</app-eyebrow>
+      <h2>Projetos <span>desenvolvidos</span></h2>
+      <p>Soluções reais que entregamos para empresas de diferentes segmentos.</p>
+    </div>
+    <div class="grid" appReveal>
+      @for (p of items; track p.title) {
+        <a class="card" href="#contato">
+          <div class="shot">
+            <div class="screen"></div>
+            <span class="label">captura · {{ p.title }}</span>
+            <span class="tag">{{ p.tag }}</span>
+          </div>
+          <div class="body">
+            <h3>{{ p.title }}</h3>
+            <p>{{ p.desc }}</p>
+            <span class="more">Ver projeto →</span>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>

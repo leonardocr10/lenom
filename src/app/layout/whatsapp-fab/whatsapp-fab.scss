@@ -1,0 +1,30 @@
+a {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px 14px 16px;
+  border-radius: 999px;
+  background: #25d366;
+  color: var(--navy-ink);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 16px 36px -12px rgba(37, 211, 102, 0.7);
+  transition: transform 0.2s;
+
+  &:hover {
+    color: var(--navy-ink);
+    transform: translateY(-2px);
+  }
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--navy-ink);
+  box-shadow: 0 0 0 4px rgba(11, 31, 51, 0.15);
+}

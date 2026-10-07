@@ -1,0 +1,35 @@
+<section id="planos">
+  <div class="container">
+    <div class="head" appReveal>
+      <app-eyebrow>NOSSOS PLANOS</app-eyebrow>
+      <h2>Escolha o plano ideal<br /><span>para o seu projeto</span></h2>
+      <p>Planos transparentes, sem surpresas. Soluções para cada etapa do seu negócio.</p>
+      <div class="pills">
+        @for (g of guarantees; track g) {
+          <span class="pill">{{ g }}</span>
+        }
+      </div>
+    </div>
+    <div class="grid" appReveal>
+      @for (p of plans; track p.name) {
+        <div class="plan" [class.featured]="p.featured">
+          @if (p.featured) {
+            <span class="badge">MAIS VENDIDO</span>
+          }
+          <div class="name">{{ p.name }}</div>
+          <div class="desc">{{ p.desc }}</div>
+          <div class="from">A partir de</div>
+          <div class="price">
+            {{ p.price }}<span>{{ p.unit }}</span>
+          </div>
+          <div class="features">
+            @for (f of p.features; track f) {
+              <div class="feature"><span class="tick">✓</span>{{ f }}</div>
+            }
+          </div>
+          <a class="cta" href="#contato">{{ p.cta }} →</a>
+        </div>
+      }
+    </div>
+  </div>
+</section>

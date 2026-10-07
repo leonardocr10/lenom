@@ -1,0 +1,33 @@
+<section id="historia" #section>
+  <div class="grid">
+    <div class="stage-wrap">
+      <app-story-stage [chapter]="chapter()" (chapterSelect)="goTo($event)" />
+    </div>
+
+    <div class="chapters">
+      @for (c of chapters; track c.n; let i = $index) {
+        <article class="chapter" [class.active]="i === chapter()">
+          <div class="eyebrow">{{ c.eyebrow }}</div>
+          <h2>
+            {{ c.title }}<br /><span>{{ c.titleAccent }}</span>
+          </h2>
+          <p>{{ c.text }}</p>
+          @if (c.chips) {
+            <div class="chips">
+              @for (chip of c.chips; track chip) {
+                <span class="chip">{{ chip }}</span>
+              }
+            </div>
+          }
+          @if (c.ctas) {
+            <div class="ctas">
+              @for (cta of c.ctas; track cta.label) {
+                <a class="btn" [class]="cta.variant" [href]="cta.href">{{ cta.label }}</a>
+              }
+            </div>
+          }
+        </article>
+      }
+    </div>
+  </div>
+</section>

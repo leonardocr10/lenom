@@ -1,0 +1,12 @@
+<a class="logo" href="#inicio" [attr.aria-label]="label">
+  <span class="symbol" aria-hidden="true"><i class="bar-v"></i><i class="bar-h"></i></span>
+  <span class="word" aria-hidden="true" (mouseleave)="reset()">
+    @for (l of letters; track l.letter; let i = $index) {
+      <span class="item" [class.active]="activeIndex() === i" (mouseenter)="activate(i)">
+        <span class="ch">{{ l.letter }}</span>
+        <span class="suffix">{{ l.word.slice(1) }}</span>
+      </span>
+    }
+    <span class="ai">.AI</span>
+  </span>
+</a>

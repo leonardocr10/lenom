@@ -1,0 +1,112 @@
+<div class="topbar">
+  <span class="counter"
+    >CAPÍTULO <b>0{{ chapter() + 1 }}</b> / 05</span
+  >
+  <div class="rail">
+    @for (i of rail; track i) {
+      <button
+        type="button"
+        [class.on]="i <= chapter()"
+        [class.current]="i === chapter()"
+        [attr.aria-label]="'Capítulo ' + (i + 1)"
+        [attr.aria-current]="i === chapter() ? 'step' : null"
+        (click)="chapterSelect.emit(i)"
+      ></button>
+    }
+  </div>
+</div>
+
+<svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+  @for (l of lines; track $index) {
+    <path class="base" [attr.d]="l.d" pathLength="100" />
+    <path class="flow" [attr.d]="l.d" />
+    <circle class="spark" r="1">
+      <animateMotion dur="2.4s" repeatCount="indefinite" [attr.path]="l.d" [attr.begin]="l.begin" />
+    </circle>
+  }
+</svg>
+
+@for (t of stage.manualTasks; track t.text) {
+  <div
+    class="postit"
+    [style.--x]="t.pos[0] + '%'"
+    [style.--y]="t.pos[1] + '%'"
+    [style.--rot]="t.rot + 'deg'"
+  >
+    <span class="dot"></span>
+    <span class="txt">{{ t.text }}</span>
+    <span class="tag">MANUAL</span>
+  </div>
+}
+
+@for (n of stage.nodes; track n.mono) {
+  <div
+    class="node"
+    [style.--fx]="n.from[0] + '%'"
+    [style.--fy]="n.from[1] + '%'"
+    [style.--dx]="n.to[0] - n.from[0] + '%'"
+    [style.--dy]="n.to[1] - n.from[1] + '%'"
+    [style.--rot]="n.rot + 'deg'"
+  >
+    <div class="chip">
+      <div class="ico" [style.background]="n.color">{{ n.mono }}</div>
+      <span>{{ n.label }}</span>
+    </div>
+  </div>
+}
+
+<div class="engine">
+  <div class="engine-label">MOTOR LENOM</div>
+  <div class="engine-status">{{ engineStatus() }}</div>
+</div>
+
+<div class="log">
+  @for (e of stage.log; track e.text; let i = $index) {
+    <div class="row" [style.--i]="i">
+      <span class="check">✓</span>
+      <span class="what">{{ e.text }}</span>
+      <span class="time">{{ e.time }}</span>
+    </div>
+  }
+</div>
+
+<div class="dash">
+  <div class="dash-head">
+    <span class="dash-title">PAINEL GERENCIAL</span>
+    <span class="dash-pill">Semana atual</span>
+  </div>
+  <div class="kpis">
+    @for (k of stage.dashboard.kpis; track k.label) {
+      <div class="kpi">
+        <div class="kpi-value" [class.accent]="k.accent">{{ k.value }}</div>
+        <div class="kpi-label">{{ k.label }}</div>
+      </div>
+    }
+  </div>
+  <div class="chart">
+    <span class="chart-title">Fluxos executados por dia</span>
+    <div class="bars">
+      @for (b of stage.dashboard.bars; track b.d) {
+        <div class="col">
+          <div class="bar" [style.--v]="b.v + '%'"></div>
+          <span class="day">{{ b.d }}</span>
+        </div>
+      }
+    </div>
+  </div>
+  <span class="note">{{ stage.dashboard.note }}</span>
+</div>
+
+<div class="products">
+  @for (p of stage.products; track p.title; let i = $index) {
+    <div class="product" [class.left]="i === 0" [class.center]="i === 1" [class.right]="i === 2">
+      <div class="shot">
+        <span>captura · {{ p.shot }}</span>
+      </div>
+      <div class="meta">
+        <div class="name">{{ p.title }}</div>
+        <div class="price">{{ p.price }}</div>
+      </div>
+    </div>
+  }
+</div>

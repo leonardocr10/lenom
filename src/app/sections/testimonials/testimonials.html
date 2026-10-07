@@ -1,0 +1,36 @@
+<section id="depoimentos">
+  <div class="container">
+    <div class="head" appReveal>
+      <app-eyebrow>DEPOIMENTOS</app-eyebrow>
+      <h2>O que dizem <span>nossos clientes</span></h2>
+    </div>
+
+    <div class="grid" appReveal>
+      @for (t of items; track t.role) {
+        <figure>
+          <div class="quote-mark" aria-hidden="true">“</div>
+          <div class="stars" aria-label="5 de 5 estrelas">★★★★★</div>
+          <blockquote>{{ t.quote }}</blockquote>
+          <figcaption>
+            <div class="avatar">{{ t.role[0] }}</div>
+            <div>
+              <div class="role">{{ t.role }}</div>
+              <div class="company">{{ t.company }}</div>
+            </div>
+          </figcaption>
+        </figure>
+      }
+    </div>
+
+    <div class="cta-band" appReveal>
+      <div class="cta-copy">
+        <h2>Pronto para tirar seu projeto do papel?</h2>
+        <p>Conte sua ideia e receba uma proposta personalizada sem compromisso.</p>
+      </div>
+      <div class="cta-actions">
+        <a class="primary" href="#contato">Solicitar orçamento →</a>
+        <a class="secondary" href="#contato">Falar no WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>

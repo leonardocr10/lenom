@@ -1,0 +1,123 @@
+<section id="contato">
+  <div class="container layout">
+    <div appReveal>
+      <app-eyebrow>CONTATO</app-eyebrow>
+      <h2>Vamos conversar<br />sobre o <span>seu projeto?</span></h2>
+      <p class="sub">Preencha o formulário e retornaremos em até 1 dia útil.</p>
+      <div class="cards">
+        @for (c of cards; track c.icon) {
+          <div class="card">
+            <div class="icon">{{ c.icon }}</div>
+            <div>
+              <div class="card-title">{{ c.title }}</div>
+              <div class="card-text">{{ c.text }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="panel" appReveal>
+      @if (sent()) {
+        <div class="success" role="status">
+          <div class="check">✓</div>
+          <div class="success-title">Mensagem enviada</div>
+          <p>Retornaremos em até 1 dia útil.</p>
+          <button type="button" class="again" (click)="reset()">Enviar outra mensagem</button>
+        </div>
+      } @else {
+        <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="two">
+            <label>
+              Nome *
+              <input
+                formControlName="name"
+                placeholder="Seu nome"
+                autocomplete="name"
+                [class.error]="invalid('name')"
+              />
+              @if (invalid('name')) {
+                <span class="msg">Informe seu nome.</span>
+              }
+            </label>
+            <label>
+              WhatsApp *
+              <input
+                formControlName="phone"
+                placeholder="(11) 90000-0000"
+                inputmode="tel"
+                autocomplete="tel"
+                [class.error]="invalid('phone')"
+                (input)="onPhoneInput($event)"
+              />
+              @if (invalid('phone')) {
+                <span class="msg">Informe um número com DDD válido.</span>
+              }
+            </label>
+          </div>
+
+          <div class="field">
+            <span class="label">Qual o seu projeto?</span>
+            <div class="topics">
+              @for (t of allTopics; track t) {
+                <button
+                  type="button"
+                  class="topic"
+                  [class.on]="topics().includes(t)"
+                  [attr.aria-pressed]="topics().includes(t)"
+                  (click)="toggleTopic(t)"
+                >
+                  {{ t }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <label>
+            Como podemos ajudar? *
+            <textarea
+              formControlName="message"
+              rows="4"
+              placeholder="Ex.: quero um site para minha clínica, com agendamento pelo WhatsApp"
+              [class.error]="invalid('message')"
+            ></textarea>
+            @if (invalid('message')) {
+              <span class="msg">Conte um pouco mais sobre o que você precisa.</span>
+            }
+          </label>
+
+          <label>
+            <span>E-mail <span class="optional">(opcional)</span></span>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="voce@empresa.com.br"
+              autocomplete="email"
+              [class.error]="invalid('email')"
+            />
+            @if (invalid('email')) {
+              <span class="msg">Informe um e-mail válido.</span>
+            }
+          </label>
+
+          <div class="privacy-wrap">
+            <label class="privacy">
+              <input type="checkbox" formControlName="privacy" />
+              <span>
+                Li e concordo com a <a href="#">Política de Privacidade</a> e autorizo o contato.
+              </span>
+            </label>
+            @if (invalid('privacy')) {
+              <span class="msg">É necessário concordar para enviar.</span>
+            }
+          </div>
+
+          <div class="submit-row">
+            <button type="submit" class="submit">Enviar mensagem →</button>
+            <span class="hint">Resposta em até 1 dia útil.</span>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</section>

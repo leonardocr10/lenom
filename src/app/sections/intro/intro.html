@@ -10,21 +10,22 @@
 
   <div class="content">
     <div class="seal">
-      <span class="badge">LENOM.AI</span>
-      <span class="seal-text">Sites, sistemas e automação</span>
+      <span class="dot" aria-hidden="true"></span>
+      <span class="seal-text">SITES · SISTEMAS · AUTOMAÇÃO</span>
     </div>
     <h1>Seu negócio,<br /><span>sem trabalho manual.</span></h1>
     <p class="lead">
-      Conectamos suas ferramentas, automatizamos o que é repetitivo e entregamos a tecnologia que a
-      sua empresa precisa para crescer.
+      Integramos site, WhatsApp, e-mail, CRM e planilhas em um só fluxo — e criamos os sites e
+      sistemas que a sua empresa precisa para crescer.
     </p>
     <div class="actions">
       <a class="btn primary" href="#contato">Solicitar orçamento <span>→</span></a>
-      <a class="btn secondary" href="#historia">Ver como funciona</a>
+      <a class="btn secondary" href="#planos">Ver planos e preços</a>
     </div>
-    <a class="cue" href="#historia">
-      ROLE PARA VER COMO
-      <span class="track"><span class="runner"></span></span>
-    </a>
+    <ul class="trust">
+      @for (item of trust; track item) {
+        <li><span class="check" aria-hidden="true">✓</span>{{ item }}</li>
+      }
+    </ul>
   </div>
 </section>

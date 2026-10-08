@@ -1,0 +1,98 @@
+<div class="grid-wrap" [class.busy]="loading()">
+  <table>
+    <thead>
+      <tr>
+        @for (c of columns(); track c.key) {
+          <th
+            [style.width]="c.width || null"
+            [class.end]="c.align === 'end'"
+            [class.sortable]="c.sortable !== false"
+            [attr.aria-sort]="
+              sort().sort === c.key ? (sort().dir === 'asc' ? 'ascending' : 'descending') : null
+            "
+            (click)="toggleSort(c)"
+          >
+            <span>{{ c.label }}</span>
+            @if (c.sortable !== false) {
+              <i
+                class="arrow"
+                [class.on]="sort().sort === c.key"
+                [class.desc]="sort().sort === c.key && sort().dir === 'desc'"
+                aria-hidden="true"
+              ></i>
+            }
+          </th>
+        }
+        @if (actions()) {
+          <th class="end actions-col">Ações</th>
+        }
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (row of rows(); track trackRow($index, row)) {
+        <tr>
+          @for (c of columns(); track c.key) {
+            <td [class.end]="c.align === 'end'">
+              @if (c.type === 'thumb') {
+                @if (row[c.key]) {
+                  <img class="thumb" [src]="row[c.key]" alt="" loading="lazy" />
+                } @else {
+                  <span class="thumb empty" aria-hidden="true"></span>
+                }
+              } @else if (c.type === 'badge') {
+                <span class="badge" [class]="badgeTone(row, c)">{{ cell(row, c) }}</span>
+              } @else if (c.type === 'bool') {
+                <span class="badge" [class]="row[c.key] ? 'green' : 'muted'">
+                  {{ cell(row, c) }}
+                </span>
+              } @else {
+                {{ cell(row, c) }}
+              }
+            </td>
+          }
+          @if (actions()) {
+            <td class="end actions-col">
+              <button type="button" class="ghost" (click)="edit.emit(row)">
+                {{ editLabel() }}
+              </button>
+              <button type="button" class="ghost danger" (click)="remove.emit(row)">Excluir</button>
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr class="empty">
+          <td [attr.colspan]="columns().length + (actions() ? 1 : 0)">{{ emptyText() }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (loading()) {
+    <div class="veil"><span class="spinner"></span></div>
+  }
+</div>
+
+<footer class="pager">
+  <div class="left">
+    <span class="range">{{ range() }}</span>
+    <label class="per">
+      Por página
+      <select [value]="perPage()" (change)="changePerPage($event)">
+        @for (n of perPageOptions; track n) {
+          <option [value]="n">{{ n }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  <div class="pages">
+    <button type="button" [disabled]="page() <= 1" (click)="pageChange.emit(page() - 1)">‹</button>
+    @for (n of pageList(); track n) {
+      <button type="button" [class.on]="n === page()" (click)="pageChange.emit(n)">{{ n }}</button>
+    }
+    <button type="button" [disabled]="page() >= pages()" (click)="pageChange.emit(page() + 1)">
+      ›
+    </button>
+  </div>
+</footer>

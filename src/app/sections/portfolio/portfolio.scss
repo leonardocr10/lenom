@@ -26,9 +26,15 @@ section {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
   gap: 20px;
   margin-top: 52px;
+  align-items: start;
+}
+
+.rest {
+  display: grid;
+  gap: 16px;
 }
 
 .card {
@@ -56,6 +62,16 @@ section {
   place-items: center;
   aspect-ratio: 16 / 10;
   background: linear-gradient(160deg, #0e2a47, #123f3a);
+}
+
+.shot.has-photo {
+  background: var(--mint-2);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .screen {
@@ -89,6 +105,49 @@ section {
   letter-spacing: 0.06em;
 }
 
+.card.row {
+  display: grid;
+  grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
+  align-items: stretch;
+
+  .shot {
+    aspect-ratio: auto;
+    min-height: 100%;
+  }
+
+  .body {
+    padding: 18px 20px;
+  }
+
+  h3 {
+    font-size: 17px;
+  }
+
+  p {
+    margin: 6px 0 12px;
+    font-size: 13.5px;
+  }
+
+  .more {
+    font-size: 13px;
+  }
+}
+
+.modules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.module {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--mint-3);
+  color: #1f6b2b;
+  font: 600 12px var(--font-body);
+}
+
 .body {
   display: flex;
   flex-direction: column;
@@ -115,8 +174,23 @@ section {
   color: var(--green);
 }
 
+@media (max-width: 759px) {
+  section {
+    padding: 88px 0;
+  }
+}
+
 @media (max-width: 520px) {
   section {
-    padding: 80px 0;
+    padding: 72px 0;
+  }
+
+  .card.row {
+    grid-template-columns: minmax(0, 1fr);
+
+    .shot {
+      aspect-ratio: 16 / 10;
+      min-height: 140px;
+    }
   }
 }

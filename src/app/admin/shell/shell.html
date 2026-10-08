@@ -1,0 +1,54 @@
+<div class="shell" [class.open]="menuOpen()">
+  <aside class="side">
+    <div class="brand">
+      <app-logo [animate]="false" />
+      <span class="tag">Painel</span>
+    </div>
+
+    <nav>
+      @for (g of groups; track g.title) {
+        <div class="group">
+          <span class="group-title">{{ g.title }}</span>
+          @for (l of g.links; track l.path) {
+            @if (visible(l)) {
+              <a
+                [routerLink]="l.path"
+                routerLinkActive="on"
+                [routerLinkActiveOptions]="{ exact: l.path === '/admin' }"
+                (click)="menuOpen.set(false)"
+              >
+                <span class="icon" aria-hidden="true">{{ l.icon }}</span>
+                {{ l.label }}
+              </a>
+            }
+          }
+        </div>
+      }
+    </nav>
+
+    <a class="back" href="/" target="_blank" rel="noopener">Ver o site ↗</a>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button type="button" class="burger" (click)="menuOpen.set(!menuOpen())" aria-label="Menu">
+        ☰
+      </button>
+      <div class="spacer"></div>
+      <div class="who">
+        <span class="avatar">{{ initials() }}</span>
+        <div class="who-text">
+          <strong>{{ user()?.name }}</strong>
+          <small>{{ user()?.role === 'admin' ? 'Administrador' : 'Editor' }}</small>
+        </div>
+      </div>
+      <button type="button" class="exit" (click)="logout()">Sair</button>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </div>
+
+  <div class="scrim" (click)="menuOpen.set(false)"></div>
+</div>

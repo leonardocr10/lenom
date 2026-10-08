@@ -2,7 +2,8 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "5b34b8e3-f4ad-4529-a2e3-1158e2fb8553"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -51,7 +52,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": [
+              "src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -63,7 +66,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "8kB",
+                  "maximumWarning": "12kB",
                   "maximumError": "16kB"
                 }
               ],
@@ -87,7 +90,10 @@
               "buildTarget": "lenom-ai:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          }
         }
       }
     }

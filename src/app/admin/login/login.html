@@ -1,0 +1,39 @@
+<main class="page">
+  <section class="card">
+    <app-logo [animate]="false" />
+    <h1>Painel administrativo</h1>
+    <p class="sub">Entre para gerenciar o conteúdo do site.</p>
+
+    @if (error()) {
+      <p class="alert">{{ error() }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label>
+        <span>E-mail</span>
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="voce@lenom.ai"
+          autocomplete="username"
+        />
+      </label>
+
+      <label>
+        <span>Senha</span>
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        />
+      </label>
+
+      <button type="submit" class="primary" [disabled]="loading()">
+        {{ loading() ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+
+    <a class="back" href="/">← Voltar ao site</a>
+  </section>
+</main>

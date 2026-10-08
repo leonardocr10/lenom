@@ -1,32 +1,72 @@
-<section id="historia" #section>
+<section id="historia">
   <div class="grid">
-    <div class="stage-wrap">
-      <app-story-stage [chapter]="chapter()" (chapterSelect)="goTo($event)" />
+    <div class="flow" aria-hidden="true">
+      <div class="flow-head">
+        <span>EXEMPLO DE FLUXO</span>
+        <span class="live">AO VIVO</span>
+      </div>
+
+      <div class="diagram">
+        <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+          @for (n of nodes; track n.mono) {
+            <line
+              [attr.x1]="n.to[0]"
+              [attr.y1]="n.to[1]"
+              [attr.x2]="center[0]"
+              [attr.y2]="center[1]"
+            />
+          }
+        </svg>
+
+        @for (n of nodes; track n.mono) {
+          <div class="node" [style.left.%]="n.to[0]" [style.top.%]="n.to[1]">
+            <span class="ico" [style.background]="n.color">{{ n.mono }}</span>
+            <span>{{ n.label }}</span>
+          </div>
+        }
+
+        <div class="engine" [style.left.%]="center[0]" [style.top.%]="center[1]">
+          <span class="engine-label">MOTOR LENOM</span>
+          <span class="engine-status">Executando fluxos</span>
+        </div>
+      </div>
+
+      <div class="log">
+        @for (e of log; track e.text) {
+          <div class="row">
+            <span class="check">✓</span>
+            <span class="what">{{ e.text }}</span>
+            <span class="time">{{ e.time }}</span>
+          </div>
+        }
+      </div>
     </div>
 
-    <div class="chapters">
-      @for (c of chapters; track c.n; let i = $index) {
-        <article class="chapter" [class.active]="i === chapter()">
-          <div class="eyebrow">{{ c.eyebrow }}</div>
-          <h2>
-            {{ c.title }}<br /><span>{{ c.titleAccent }}</span>
-          </h2>
-          <p>{{ c.text }}</p>
-          @if (c.chips) {
-            <div class="chips">
-              @for (chip of c.chips; track chip) {
-                <span class="chip">{{ chip }}</span>
-              }
+    <div class="copy">
+      <div class="eyebrow">{{ header.eyebrow }}</div>
+      <h2>
+        {{ header.title }}<br />{{ header.titleLead }} <span>{{ header.titleAccent }}</span>
+      </h2>
+      <p class="intro">{{ intro }}</p>
+
+      <ol class="steps">
+        @for (s of steps; track s.n) {
+          <li>
+            <span class="n">{{ s.n }}</span>
+            <div>
+              <h3>{{ s.title }}</h3>
+              <p>{{ s.text }}</p>
             </div>
+          </li>
+        }
+      </ol>
+
+      @if (chips.length) {
+        <div class="chips">
+          @for (chip of chips; track chip) {
+            <span class="chip">{{ chip }}</span>
           }
-          @if (c.ctas) {
-            <div class="ctas">
-              @for (cta of c.ctas; track cta.label) {
-                <a class="btn" [class]="cta.variant" [href]="cta.href">{{ cta.label }}</a>
-              }
-            </div>
-          }
-        </article>
+        </div>
       }
     </div>
   </div>

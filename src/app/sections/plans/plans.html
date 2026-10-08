@@ -2,8 +2,8 @@
   <div class="container">
     <div class="head" appReveal>
       <app-eyebrow>NOSSOS PLANOS</app-eyebrow>
-      <h2>Escolha o plano ideal<br /><span>para o seu projeto</span></h2>
-      <p>Planos transparentes, sem surpresas. Soluções para cada etapa do seu negócio.</p>
+      <h2>Preço claro <span>desde o início</span></h2>
+      <p>Valores de partida para cada tipo de projeto. A proposta final detalha escopo e prazo.</p>
       <div class="pills">
         @for (g of guarantees; track g) {
           <span class="pill">{{ g }}</span>
@@ -14,7 +14,7 @@
       @for (p of plans; track p.name) {
         <div class="plan" [class.featured]="p.featured">
           @if (p.featured) {
-            <span class="badge">MAIS VENDIDO</span>
+            <span class="badge">RECOMENDADO</span>
           }
           <div class="name">{{ p.name }}</div>
           <div class="desc">{{ p.desc }}</div>
@@ -30,6 +30,17 @@
           <a class="cta" href="#contato">{{ p.cta }} →</a>
         </div>
       }
+    </div>
+
+    <div class="band" appReveal>
+      <div class="band-copy">
+        <h3>Automação e integrações</h3>
+        <p>
+          Conectamos as ferramentas que você já usa — WhatsApp, e-mail, CRM, planilhas — via API. O
+          valor depende dos fluxos, por isso o orçamento é sob medida.
+        </p>
+      </div>
+      <a class="band-cta" href="#contato">Orçar automação →</a>
     </div>
   </div>
 </section>

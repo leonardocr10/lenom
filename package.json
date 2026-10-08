@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "api": "npm run seed:build && node server/index.js",
+    "dev": "concurrently -n api,web -c green,cyan \"npm run api\" \"npm start\"",
+    "serve:prod": "npm run build && node server/index.js",
+    "seed:build": "esbuild src/app/data/content.ts --format=esm --outfile=server/seed-content.mjs"
   },
   "private": true,
   "packageManager": "npm@11.17.0",
@@ -17,6 +21,11 @@
     "@angular/forms": "^22.2.0",
     "@angular/platform-browser": "^22.2.0",
     "@angular/router": "^22.2.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.4.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -24,6 +33,7 @@
     "@angular/build": "^22.2.2",
     "@angular/cli": "^22.2.2",
     "@angular/compiler-cli": "^22.2.0",
+    "concurrently": "^10.0.5",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2"
   }

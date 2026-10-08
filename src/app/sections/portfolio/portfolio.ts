@@ -11,5 +11,7 @@ import { SectionEyebrow } from '../../shared/section-eyebrow';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Portfolio {
-  protected readonly items = content.portfolio;
+  /** O primeiro projeto ocupa o card grande; os demais vão na coluna lateral. */
+  protected readonly highlight = content.portfolio[0];
+  protected readonly others = content.portfolio.slice(1);
 }

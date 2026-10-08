@@ -2,24 +2,57 @@
   <div class="container">
     <div class="head" appReveal>
       <app-eyebrow>PORTFÓLIO</app-eyebrow>
-      <h2>Projetos <span>desenvolvidos</span></h2>
+      <h2>Projetos <span>entregues</span></h2>
       <p>Soluções reais que entregamos para empresas de diferentes segmentos.</p>
     </div>
+
     <div class="grid" appReveal>
-      @for (p of items; track p.title) {
-        <a class="card" href="#contato">
-          <div class="shot">
-            <div class="screen"></div>
-            <span class="label">captura · {{ p.title }}</span>
+      @if (highlight; as p) {
+        <a class="card feature" href="#contato">
+          <div class="shot" [class.has-photo]="!!p.image">
+            @if (p.image) {
+              <img [src]="p.image" [alt]="'Capa do projeto ' + p.title" loading="lazy" />
+            } @else {
+              <div class="screen"></div>
+              <span class="label">captura · {{ p.title }}</span>
+            }
             <span class="tag">{{ p.tag }}</span>
           </div>
           <div class="body">
             <h3>{{ p.title }}</h3>
             <p>{{ p.desc }}</p>
-            <span class="more">Ver projeto →</span>
+            @if (p.modules?.length) {
+              <div class="modules">
+                @for (m of p.modules; track m) {
+                  <span class="module">{{ m }}</span>
+                }
+              </div>
+            }
+            <span class="more">Quero um projeto assim →</span>
           </div>
         </a>
       }
+
+      <div class="rest">
+        @for (p of others; track p.title) {
+          <a class="card row" href="#contato">
+            <div class="shot" [class.has-photo]="!!p.image">
+              @if (p.image) {
+                <img [src]="p.image" [alt]="'Capa do projeto ' + p.title" loading="lazy" />
+              } @else {
+                <div class="screen"></div>
+                <span class="label">captura · {{ p.title }}</span>
+              }
+              <span class="tag">{{ p.tag }}</span>
+            </div>
+            <div class="body">
+              <h3>{{ p.title }}</h3>
+              <p>{{ p.desc }}</p>
+              <span class="more">Quero um projeto assim →</span>
+            </div>
+          </a>
+        }
+      </div>
     </div>
   </div>
 </section>

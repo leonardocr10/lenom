@@ -21,10 +21,18 @@ a {
   }
 }
 
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--navy-ink);
-  box-shadow: 0 0 0 4px rgba(11, 31, 51, 0.15);
+app-qicon {
+  font-size: 22px;
+}
+
+@media (max-width: 520px) {
+  a {
+    right: 16px;
+    bottom: 16px;
+    padding: 14px;
+  }
+
+  .text {
+    display: none;
+  }
 }

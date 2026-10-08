@@ -1,0 +1,147 @@
+@use '../ui' as ui;
+
+@include ui.page-head;
+@include ui.buttons;
+@include ui.inputs;
+@include ui.alert;
+@include ui.toast;
+@include ui.overlay;
+
+:host {
+  display: block;
+}
+
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px dashed #dce5e1;
+  background: #fff;
+  transition: all 150ms ease;
+
+  &.dragging {
+    border-color: var(--green);
+    background: var(--mint-3);
+  }
+
+  strong {
+    display: block;
+    font-size: 14px;
+    color: var(--navy-ink);
+  }
+
+  small {
+    font-size: 12px;
+    color: #7a8a98;
+  }
+}
+
+label.ghost {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--navy-brand);
+  font: 600 13.5px var(--font-body);
+  cursor: pointer;
+  transition: all 150ms ease;
+
+  &:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  input {
+    display: none;
+  }
+}
+
+.toolbar {
+  margin-bottom: 14px;
+}
+
+.search {
+  position: relative;
+  display: block;
+  max-width: 380px;
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    left: 13px;
+    transform: translateY(-50%);
+    color: #93a3b1;
+    font-size: 16px;
+  }
+
+  input {
+    padding-left: 36px;
+  }
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.thumb {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &:hover {
+    border-color: var(--green);
+  }
+}
+
+.confirm {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 62;
+  width: min(420px, calc(100vw - 32px));
+  padding: 24px;
+  transform: translate(-50%, -50%);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 30px 70px -30px rgba(11, 31, 51, 0.6);
+
+  h3 {
+    margin: 0;
+    font: 700 18px var(--font-display);
+    color: var(--navy-ink);
+  }
+
+  p {
+    margin: 10px 0 0;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #55667a;
+  }
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}

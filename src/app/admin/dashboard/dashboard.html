@@ -1,0 +1,65 @@
+<header class="page-head">
+  <div>
+    <h1>Painel</h1>
+    <p>Resumo do que está acontecendo no site.</p>
+  </div>
+  <a class="cta" routerLink="/admin/leads">Ver solicitações →</a>
+</header>
+
+@if (error()) {
+  <p class="alert">{{ error() }}</p>
+}
+
+<section class="cards">
+  @for (c of cards(); track c.label) {
+    <article class="stat" [class.accent]="c.accent">
+      <span class="value">{{ c.value }}</span>
+      <span class="label">{{ c.label }}</span>
+      <small>{{ c.note }}</small>
+    </article>
+  } @empty {
+    @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+      <article class="stat skeleton"></article>
+    }
+  }
+</section>
+
+<section class="panels">
+  <div class="card">
+    <h2>Solicitações por status</h2>
+    @if (stats()?.byStatus?.length) {
+      <ul class="bars">
+        @for (s of stats()!.byStatus; track s.status) {
+          <li>
+            <span class="name">{{ s.status }}</span>
+            <span class="track">
+              <span class="fill" [style.width.%]="(s.total / maxStatus()) * 100"></span>
+            </span>
+            <span class="num">{{ s.total }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="empty">Nenhuma solicitação recebida ainda.</p>
+    }
+  </div>
+
+  <div class="card">
+    <h2>Últimas solicitações</h2>
+    @if (stats()?.latest?.length) {
+      <ul class="latest">
+        @for (l of stats()!.latest; track l.id) {
+          <li>
+            <div>
+              <strong>{{ l.name }}</strong>
+              <small>{{ l.company || 'Sem empresa' }} · {{ when(l.created_at) }}</small>
+            </div>
+            <span class="badge">{{ l.status }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="empty">As solicitações do formulário aparecem aqui.</p>
+    }
+  </div>
+</section>

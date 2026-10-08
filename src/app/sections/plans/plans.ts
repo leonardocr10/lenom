@@ -15,6 +15,6 @@ export class Plans {
   protected readonly guarantees = [
     'Pagamento facilitado',
     'Suporte em todas as etapas',
-    'Solução sob medida para sua empresa',
+    'Proposta sem compromisso',
   ];
 }

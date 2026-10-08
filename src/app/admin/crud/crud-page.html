@@ -1,0 +1,195 @@
+<header class="page-head">
+  <div>
+    <h1>{{ config().title }}</h1>
+    <p>{{ config().subtitle }}</p>
+  </div>
+  @if (config().canCreate) {
+    <button type="button" class="primary" (click)="create()">+ Novo {{ config().singular }}</button>
+  }
+</header>
+
+<section class="toolbar">
+  <label class="search">
+    <span class="icon" aria-hidden="true">⌕</span>
+    <input
+      type="search"
+      [value]="search()"
+      [placeholder]="config().searchPlaceholder"
+      (input)="onSearch($any($event.target).value)"
+    />
+  </label>
+
+  @for (f of config().filters; track f.key) {
+    <label class="filter">
+      <span>{{ f.label }}</span>
+      <select
+        [value]="filters()[f.key] || ''"
+        (change)="onFilter(f.key, $any($event.target).value)"
+      >
+        <option value="">Todos</option>
+        @for (o of f.options; track o.value) {
+          <option [value]="o.value">{{ o.label }}</option>
+        }
+      </select>
+    </label>
+  }
+
+  @if (hasFilters()) {
+    <button type="button" class="link" (click)="clearFilters()">Limpar filtros</button>
+  }
+</section>
+
+@if (error()) {
+  <p class="alert">{{ error() }}</p>
+}
+
+<app-data-grid
+  [columns]="config().columns"
+  [rows]="rows()"
+  [total]="total()"
+  [page]="page()"
+  [perPage]="perPage()"
+  [pages]="pages()"
+  [sort]="sortState()"
+  [loading]="loading()"
+  [emptyText]="hasFilters() ? 'Nada encontrado com esses filtros.' : 'Nenhum registro ainda.'"
+  (sortChange)="onSort($event)"
+  (pageChange)="onPage($event)"
+  (perPageChange)="onPerPage($event)"
+  (edit)="edit($event)"
+  (remove)="askRemove($event)"
+/>
+
+@if (toast()) {
+  <div class="toast" role="status">{{ toast() }}</div>
+}
+
+@if (editing(); as row) {
+  <div class="overlay" (click)="close()"></div>
+  <aside class="drawer" role="dialog" aria-modal="true">
+    <header>
+      <h2>{{ isNew() ? 'Novo ' + config().singular : 'Editar ' + config().singular }}</h2>
+      <button type="button" class="close" (click)="close()" aria-label="Fechar">×</button>
+    </header>
+
+    <div class="drawer-body">
+      @for (f of config().fields; track f.key) {
+        <div class="field" [class.wide]="f.wide || f.type === 'textarea' || f.type === 'list'">
+          @switch (f.type) {
+            @case ('bool') {
+              <label class="check">
+                <input type="checkbox" [checked]="!!value(f)" (change)="setBool(f, $event)" />
+                <span>{{ f.label }}</span>
+              </label>
+            }
+            @case ('readonly') {
+              <span class="label">{{ f.label }}</span>
+              <p class="readonly">{{ value(f) || '—' }}</p>
+            }
+            @case ('image') {
+              <span class="label">{{ f.label }}</span>
+              <div class="image-field">
+                @if (value(f)) {
+                  <img class="preview" [src]="value(f)" alt="Pré-visualização da capa" />
+                } @else {
+                  <span class="preview empty" aria-hidden="true">sem capa</span>
+                }
+                <div class="image-actions">
+                  <label class="file">
+                    {{ uploadingField() === f.key ? 'Enviando...' : 'Enviar imagem' }}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      [disabled]="uploadingField() === f.key"
+                      (change)="pickImage(f, $event)"
+                    />
+                  </label>
+                  @if (value(f)) {
+                    <button type="button" class="link" (click)="clearImage(f)">Remover</button>
+                  }
+                </div>
+              </div>
+            }
+            @case ('select') {
+              <span class="label">{{ f.label }}</span>
+              <select [value]="value(f)" (change)="setValue(f, $any($event.target).value)">
+                @for (o of f.options || []; track o) {
+                  <option [value]="o">{{ o }}</option>
+                }
+              </select>
+            }
+            @case ('textarea') {
+              <span class="label">{{ f.label }}{{ f.required ? ' *' : '' }}</span>
+              <textarea
+                [rows]="f.rows || 3"
+                [value]="value(f)"
+                (input)="setValue(f, $any($event.target).value)"
+              ></textarea>
+            }
+            @case ('list') {
+              <span class="label">{{ f.label }}</span>
+              <textarea
+                [rows]="f.rows || 5"
+                [value]="value(f)"
+                (input)="setValue(f, $any($event.target).value)"
+              ></textarea>
+            }
+            @case ('password') {
+              <span class="label">{{ f.label }}{{ isNew() && f.required ? ' *' : '' }}</span>
+              <input
+                type="password"
+                autocomplete="new-password"
+                [value]="value(f)"
+                (input)="setValue(f, $any($event.target).value)"
+              />
+            }
+            @case ('number') {
+              <span class="label">{{ f.label }}</span>
+              <input
+                type="number"
+                [value]="value(f)"
+                (input)="setValue(f, $any($event.target).value)"
+              />
+            }
+            @default {
+              <span class="label">{{ f.label }}{{ f.required ? ' *' : '' }}</span>
+              <input
+                type="text"
+                [value]="value(f)"
+                (input)="setValue(f, $any($event.target).value)"
+              />
+            }
+          }
+          @if (f.hint) {
+            <small>{{ f.hint }}</small>
+          }
+        </div>
+      }
+    </div>
+
+    <footer>
+      @if (formError()) {
+        <span class="form-error">{{ formError() }}</span>
+      }
+      <button type="button" class="ghost" (click)="close()">Cancelar</button>
+      <button type="button" class="primary" [disabled]="saving()" (click)="save()">
+        {{ saving() ? 'Salvando...' : 'Salvar' }}
+      </button>
+    </footer>
+  </aside>
+}
+
+@if (confirming(); as row) {
+  <div class="overlay" (click)="confirming.set(null)"></div>
+  <div class="confirm" role="alertdialog" aria-modal="true">
+    <h3>Excluir {{ config().singular }}?</h3>
+    <p>
+      <strong>{{ label(row) }}</strong> será removido permanentemente. Esta ação não pode ser
+      desfeita.
+    </p>
+    <div class="confirm-actions">
+      <button type="button" class="ghost" (click)="confirming.set(null)">Cancelar</button>
+      <button type="button" class="danger" (click)="confirmRemove()">Excluir</button>
+    </div>
+  </div>
+}

@@ -1,123 +1,302 @@
 <section id="contato">
-  <div class="container layout">
-    <div appReveal>
-      <app-eyebrow>CONTATO</app-eyebrow>
-      <h2>Vamos conversar<br />sobre o <span>seu projeto?</span></h2>
-      <p class="sub">Preencha o formulário e retornaremos em até 1 dia útil.</p>
-      <div class="cards">
-        @for (c of cards; track c.icon) {
-          <div class="card">
-            <div class="icon">{{ c.icon }}</div>
-            <div>
-              <div class="card-title">{{ c.title }}</div>
-              <div class="card-text">{{ c.text }}</div>
+  <div class="shell">
+    <header class="head" appReveal>
+      <div class="head-text">
+        <app-eyebrow>ORÇAMENTO</app-eyebrow>
+        <h2>Pronto para tirar seu projeto <span>do papel?</span></h2>
+        <p class="sub">
+          Conte o que você precisa em menos de 2 minutos. Respondemos com escopo, prazo e
+          investimento.
+        </p>
+      </div>
+
+      <ul class="trust">
+        @for (t of quote.trust; track t.line2) {
+          <li>
+            <span class="bubble"><app-qicon [name]="t.icon" /></span>
+            <span class="trust-text">
+              {{ t.line1 }}<br /><strong>{{ t.line2 }}</strong>
+            </span>
+          </li>
+        }
+      </ul>
+    </header>
+
+    <div class="layout">
+      <div class="formcol" appReveal>
+        @if (sent()) {
+          <div class="card success" role="status">
+            <div class="check"><app-qicon name="check" /></div>
+            <h3>Solicitação enviada com sucesso!</h3>
+            <p>
+              Recebemos as informações do seu projeto e entraremos em contato em até 1 dia útil.
+            </p>
+            <div class="success-actions">
+              <a class="btn-green" [href]="whatsappUrl" target="_blank" rel="noopener">
+                <app-qicon name="whatsapp" /> Falar no WhatsApp
+              </a>
+              <button type="button" class="btn-ghost" (click)="reset()">Voltar ao início</button>
             </div>
           </div>
+        } @else {
+          <form class="card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <div class="grid-2">
+              <label class="field">
+                <span class="label">Nome *</span>
+                <span class="input-wrap">
+                  <app-qicon name="user" class="in-icon" />
+                  <input
+                    data-field="name"
+                    formControlName="name"
+                    placeholder="Seu nome completo"
+                    autocomplete="name"
+                    [class.error]="invalid('name')"
+                  />
+                </span>
+                @if (invalid('name')) {
+                  <span class="msg">Informe seu nome.</span>
+                }
+              </label>
+
+              <label class="field">
+                <span class="label">WhatsApp *</span>
+                <span class="input-wrap">
+                  <app-qicon name="whatsapp" class="in-icon" />
+                  <input
+                    data-field="phone"
+                    formControlName="phone"
+                    placeholder="(11) 90000-0000"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    [class.error]="invalid('phone')"
+                    (input)="onPhoneInput($event)"
+                  />
+                </span>
+                @if (invalid('phone')) {
+                  <span class="msg">Informe um número com DDD válido.</span>
+                }
+              </label>
+
+              <label class="field">
+                <span class="label">E-mail *</span>
+                <span class="input-wrap">
+                  <app-qicon name="mail" class="in-icon" />
+                  <input
+                    data-field="email"
+                    type="email"
+                    formControlName="email"
+                    placeholder="seu@email.com"
+                    autocomplete="email"
+                    [class.error]="invalid('email')"
+                  />
+                </span>
+                @if (invalid('email')) {
+                  <span class="msg">Informe um e-mail válido.</span>
+                }
+              </label>
+
+              <label class="field">
+                <span class="label">Empresa <span class="optional">(opcional)</span></span>
+                <span class="input-wrap">
+                  <app-qicon name="building" class="in-icon" />
+                  <input
+                    formControlName="company"
+                    placeholder="Sua empresa"
+                    autocomplete="organization"
+                  />
+                </span>
+              </label>
+            </div>
+
+            <div class="field">
+              <span class="label">O que você precisa? *</span>
+              <div
+                class="chips"
+                data-field="topics"
+                tabindex="-1"
+                role="group"
+                aria-label="O que você precisa"
+              >
+                @for (t of allTopics; track t) {
+                  <button
+                    type="button"
+                    class="chip"
+                    [class.on]="topics().includes(t)"
+                    [attr.aria-pressed]="topics().includes(t)"
+                    (click)="toggleTopic(t)"
+                  >
+                    {{ t }}
+                  </button>
+                }
+              </div>
+              @if (topicsInvalid()) {
+                <span class="msg">Selecione ao menos uma opção.</span>
+              }
+            </div>
+
+            <label class="field">
+              <span class="label">Conte um pouco sobre o projeto *</span>
+              <textarea
+                data-field="message"
+                formControlName="message"
+                rows="3"
+                placeholder="O que você quer alcançar? Quais funcionalidades são essenciais? Tem alguma referência?"
+                [class.error]="invalid('message')"
+              ></textarea>
+              @if (invalid('message')) {
+                <span class="msg">Conte um pouco mais sobre o que você precisa.</span>
+              }
+            </label>
+
+            <button
+              type="button"
+              class="expand"
+              [class.open]="extraOpen()"
+              [attr.aria-expanded]="extraOpen()"
+              (click)="toggleExtra()"
+            >
+              <span class="sign" aria-hidden="true">{{ extraOpen() ? '−' : '+' }}</span>
+              Informar prazo e faixa de investimento (opcional)
+            </button>
+
+            @if (extraOpen()) {
+              <div class="extra">
+                <div class="grid-2">
+                  <div class="field">
+                    <span class="label">Prazo desejado</span>
+                    <div class="chips" role="group" aria-label="Prazo desejado">
+                      @for (d of quote.deadlines; track d) {
+                        <button
+                          type="button"
+                          class="chip"
+                          [class.on]="form.controls.deadline.value === d"
+                          [attr.aria-pressed]="form.controls.deadline.value === d"
+                          (click)="pick('deadline', d)"
+                        >
+                          {{ d }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <span class="label">Faixa de investimento</span>
+                    <div class="chips" role="group" aria-label="Faixa de investimento">
+                      @for (b of quote.budgets; track b) {
+                        <button
+                          type="button"
+                          class="chip"
+                          [class.on]="form.controls.budget.value === b"
+                          [attr.aria-pressed]="form.controls.budget.value === b"
+                          (click)="pick('budget', b)"
+                        >
+                          {{ b }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="upload"
+                  [class.dragging]="dragging()"
+                  [class.has-file]="!!file()"
+                  (dragover)="onDragOver($event)"
+                  (dragleave)="onDragLeave()"
+                  (drop)="onDrop($event)"
+                >
+                  <span class="up-icon"><app-qicon name="clip" /></span>
+                  <div class="up-text">
+                    @if (file()) {
+                      <strong class="up-file">{{ fileLabel() }}</strong>
+                      <small>Arquivo anexado.</small>
+                    } @else {
+                      <strong>Anexo <span class="optional">(opcional)</span></strong>
+                      <small>
+                        Arraste um arquivo ou clique para selecionar — PDF, DOC, XLS, imagens ou
+                        ZIP, até 5 MB
+                      </small>
+                    }
+                  </div>
+                  @if (file()) {
+                    <button type="button" class="btn-outline" (click)="clearFile()">Remover</button>
+                  } @else {
+                    <label class="btn-outline">
+                      <app-qicon name="upload" /> Selecionar arquivo
+                      <input type="file" [attr.accept]="accept" (change)="onFileInput($event)" />
+                    </label>
+                  }
+                </div>
+                @if (fileError()) {
+                  <span class="msg">{{ fileError() }}</span>
+                }
+              </div>
+            }
+
+            <div class="send-row">
+              <div class="privacy-wrap">
+                <label class="privacy">
+                  <input data-field="privacy" type="checkbox" formControlName="privacy" />
+                  <span>
+                    Li e concordo com a <a href="#">Política de Privacidade</a> e autorizo o contato
+                    da Lenom.AI.
+                  </span>
+                </label>
+                @if (invalid('privacy')) {
+                  <span class="msg">É necessário concordar para enviar.</span>
+                }
+              </div>
+
+              @if (sendError()) {
+                <span class="msg send-error">{{ sendError() }}</span>
+              }
+
+              <button type="submit" class="submit" [disabled]="loading()">
+                @if (loading()) {
+                  <span class="spinner"></span> Enviando solicitação...
+                } @else {
+                  <app-qicon name="send" /> Enviar solicitação <span>→</span>
+                }
+              </button>
+            </div>
+          </form>
         }
       </div>
-    </div>
 
-    <div class="panel" appReveal>
-      @if (sent()) {
-        <div class="success" role="status">
-          <div class="check">✓</div>
-          <div class="success-title">Mensagem enviada</div>
-          <p>Retornaremos em até 1 dia útil.</p>
-          <button type="button" class="again" (click)="reset()">Enviar outra mensagem</button>
+      <aside class="sidecol" appReveal>
+        <div class="side-main">
+          <h3>O que acontece depois?</h3>
+          <p>Um processo simples e rápido para tirar o seu projeto do papel.</p>
+
+          <ol class="timeline">
+            @for (s of quote.steps; track s.n) {
+              <li>
+                <span class="dot"><app-qicon [name]="s.icon" /></span>
+                <div>
+                  <strong>{{ s.n }}. {{ s.title }}</strong>
+                  <small>{{ s.note }}</small>
+                </div>
+              </li>
+            }
+          </ol>
+
+          <a class="btn-green" [href]="whatsappUrl" target="_blank" rel="noopener">
+            <app-qicon name="whatsapp" /> Prefere conversar agora?
+          </a>
         </div>
-      } @else {
-        <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-          <div class="two">
-            <label>
-              Nome *
-              <input
-                formControlName="name"
-                placeholder="Seu nome"
-                autocomplete="name"
-                [class.error]="invalid('name')"
-              />
-              @if (invalid('name')) {
-                <span class="msg">Informe seu nome.</span>
-              }
-            </label>
-            <label>
-              WhatsApp *
-              <input
-                formControlName="phone"
-                placeholder="(11) 90000-0000"
-                inputmode="tel"
-                autocomplete="tel"
-                [class.error]="invalid('phone')"
-                (input)="onPhoneInput($event)"
-              />
-              @if (invalid('phone')) {
-                <span class="msg">Informe um número com DDD válido.</span>
-              }
-            </label>
-          </div>
 
-          <div class="field">
-            <span class="label">Qual o seu projeto?</span>
-            <div class="topics">
-              @for (t of allTopics; track t) {
-                <button
-                  type="button"
-                  class="topic"
-                  [class.on]="topics().includes(t)"
-                  [attr.aria-pressed]="topics().includes(t)"
-                  (click)="toggleTopic(t)"
-                >
-                  {{ t }}
-                </button>
-              }
-            </div>
-          </div>
-
-          <label>
-            Como podemos ajudar? *
-            <textarea
-              formControlName="message"
-              rows="4"
-              placeholder="Ex.: quero um site para minha clínica, com agendamento pelo WhatsApp"
-              [class.error]="invalid('message')"
-            ></textarea>
-            @if (invalid('message')) {
-              <span class="msg">Conte um pouco mais sobre o que você precisa.</span>
+        <div class="side-info">
+          <h4>Fale com a gente</h4>
+          <ul>
+            @for (i of info; track i.text) {
+              <li>
+                <app-qicon [name]="i.icon" />
+                <span>{{ i.text }}</span>
+              </li>
             }
-          </label>
-
-          <label>
-            <span>E-mail <span class="optional">(opcional)</span></span>
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="voce@empresa.com.br"
-              autocomplete="email"
-              [class.error]="invalid('email')"
-            />
-            @if (invalid('email')) {
-              <span class="msg">Informe um e-mail válido.</span>
-            }
-          </label>
-
-          <div class="privacy-wrap">
-            <label class="privacy">
-              <input type="checkbox" formControlName="privacy" />
-              <span>
-                Li e concordo com a <a href="#">Política de Privacidade</a> e autorizo o contato.
-              </span>
-            </label>
-            @if (invalid('privacy')) {
-              <span class="msg">É necessário concordar para enviar.</span>
-            }
-          </div>
-
-          <div class="submit-row">
-            <button type="submit" class="submit">Enviar mensagem →</button>
-            <span class="hint">Resposta em até 1 dia útil.</span>
-          </div>
-        </form>
-      }
+          </ul>
+        </div>
+      </aside>
     </div>
   </div>
 </section>

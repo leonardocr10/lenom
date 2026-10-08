@@ -1,0 +1,248 @@
+:host {
+  display: block;
+}
+
+.grid-wrap {
+  position: relative;
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+th,
+td {
+  padding: 12px 16px;
+  text-align: left;
+  white-space: nowrap;
+
+  &.end {
+    text-align: right;
+  }
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--mint-2);
+  border-bottom: 1px solid var(--border);
+  font: 700 12px var(--font-body);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #5b6b7b;
+  user-select: none;
+
+  &.sortable {
+    cursor: pointer;
+
+    &:hover {
+      color: var(--green);
+    }
+  }
+}
+
+.arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 6px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 5px solid #b4c2cc;
+  vertical-align: middle;
+
+  &.on {
+    border-bottom-color: var(--green);
+  }
+
+  &.desc {
+    transform: rotate(180deg);
+  }
+}
+
+tbody tr {
+  border-bottom: 1px solid #eef3ef;
+  transition: background-color 150ms ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #fafdfb;
+  }
+}
+
+tbody td {
+  color: var(--navy-ink);
+  max-width: 420px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+tr.empty td {
+  padding: 36px 16px;
+  text-align: center;
+  color: #7a8a98;
+}
+
+img.thumb,
+span.thumb {
+  display: block;
+  width: 64px;
+  height: 40px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  object-fit: cover;
+  background: var(--mint-2);
+}
+
+span.thumb.empty {
+  background: repeating-linear-gradient(135deg, #f1f5f2 0 6px, #e8efea 6px 12px);
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.green {
+    background: var(--mint-3);
+    color: #1f6b2b;
+  }
+
+  &.navy {
+    background: #eef2f6;
+    color: var(--navy-brand);
+  }
+
+  &.muted {
+    background: #f1f4f6;
+    color: #7a8a98;
+  }
+}
+
+.actions-col {
+  width: 150px;
+}
+
+button.ghost {
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--navy-brand);
+  font: 600 12.5px var(--font-body);
+  cursor: pointer;
+  transition: all 150ms ease;
+
+  &:hover {
+    border-color: var(--border);
+    background: var(--mint-2);
+  }
+
+  &.danger:hover {
+    border-color: #f0c7c2;
+    background: #fdf1f0;
+    color: #b23a30;
+  }
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid #d6e3da;
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: lnGridSpin 0.7s linear infinite;
+}
+
+@keyframes lnGridSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12.5px;
+  color: #6b7b8b;
+}
+
+.per {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  select {
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-size: 12.5px;
+    color: var(--navy-ink);
+  }
+}
+
+.pages {
+  display: flex;
+  gap: 4px;
+
+  button {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--navy-brand);
+    font: 600 12.5px var(--font-body);
+    cursor: pointer;
+    transition: all 150ms ease;
+
+    &:hover:not(:disabled) {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    &.on {
+      border-color: var(--green);
+      background: var(--green);
+      color: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+}

@@ -9,7 +9,7 @@ footer {
   margin: 0 auto;
   padding: 64px 32px 32px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 36px;
 }
 
@@ -68,8 +68,32 @@ footer {
   color: #8fa3b7;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 759px) {
   .brand {
     grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .top {
+    padding: 48px 20px 28px;
+  }
+
+  .bottom {
+    padding: 22px 20px 28px;
+  }
+}
+
+.legal {
+  display: inline-flex;
+  gap: 18px;
+  flex-wrap: wrap;
+
+  a {
+    color: inherit;
+
+    &:hover {
+      color: var(--green-brand);
+    }
   }
 }

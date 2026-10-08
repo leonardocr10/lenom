@@ -1,0 +1,87 @@
+<header class="page-head">
+  <div>
+    <h1>Mídia</h1>
+    <p>Imagens e documentos usados no site e anexados às solicitações.</p>
+  </div>
+</header>
+
+@if (error()) {
+  <p class="alert">{{ error() }}</p>
+}
+
+<div
+  class="dropzone"
+  [class.dragging]="dragging()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="dragging.set(false)"
+  (drop)="onDrop($event)"
+>
+  <div>
+    <strong>Arraste um arquivo aqui</strong>
+    <small>Imagens, PDF, DOC, XLS ou ZIP — até 5 MB</small>
+  </div>
+  <label class="ghost">
+    {{ uploading() ? 'Enviando...' : 'Selecionar arquivo' }}
+    <input type="file" [disabled]="uploading()" (change)="onFileInput($event)" />
+  </label>
+</div>
+
+<section class="toolbar">
+  <label class="search">
+    <span class="icon" aria-hidden="true">⌕</span>
+    <input
+      type="search"
+      [value]="search()"
+      placeholder="Buscar por nome do arquivo ou tipo"
+      (input)="onSearch($any($event.target).value)"
+    />
+  </label>
+</section>
+
+<app-data-grid
+  [columns]="columns"
+  [rows]="view()"
+  [total]="total()"
+  [page]="page()"
+  [perPage]="perPage()"
+  [pages]="pages()"
+  [sort]="sortState()"
+  [loading]="loading()"
+  editLabel="Copiar link"
+  emptyText="Nenhum arquivo enviado ainda."
+  (sortChange)="onSort($event)"
+  (pageChange)="onPage($event)"
+  (perPageChange)="onPerPage($event)"
+  (edit)="copy($any($event).url)"
+  (remove)="confirming.set($any($event))"
+/>
+
+@if (view().length) {
+  <section class="gallery">
+    @for (m of view(); track m.id) {
+      @if (m.isImage) {
+        <a class="thumb" [href]="m.url" target="_blank" rel="noopener" [title]="m.original_name">
+          <img [src]="m.url" [alt]="m.original_name" loading="lazy" />
+        </a>
+      }
+    }
+  </section>
+}
+
+@if (toast()) {
+  <div class="toast" role="status">{{ toast() }}</div>
+}
+
+@if (confirming(); as row) {
+  <div class="overlay" (click)="confirming.set(null)"></div>
+  <div class="confirm" role="alertdialog" aria-modal="true">
+    <h3>Excluir arquivo?</h3>
+    <p>
+      <strong>{{ row.original_name }}</strong> será apagado do disco. Não dá para desfazer.
+    </p>
+    <div class="confirm-actions">
+      <button type="button" class="ghost" (click)="confirming.set(null)">Cancelar</button>
+      <button type="button" class="danger" (click)="confirmRemove()">Excluir</button>
+    </div>
+  </div>
+}

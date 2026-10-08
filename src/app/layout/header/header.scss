@@ -55,16 +55,18 @@ header {
   white-space: nowrap;
   padding: 12px 20px;
   border-radius: 10px;
-  background: var(--green-brand);
-  color: var(--navy-ink);
+  background: var(--green);
+  color: #fff;
   font-weight: 700;
   font-size: 14px;
   transition:
+    background-color 0.2s,
     transform 0.2s,
     box-shadow 0.2s;
 
   &:hover {
-    color: var(--navy-ink);
+    background: var(--green-hover);
+    color: #fff;
     transform: translateY(-1px);
     box-shadow: 0 10px 24px -8px rgba(92, 203, 99, 0.6);
   }
@@ -86,8 +88,8 @@ header {
     gap: 4px;
     align-content: center;
     justify-items: center;
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     padding: 0;
     border-radius: 10px;
     border: 1px solid #cfdcd3;
@@ -123,7 +125,15 @@ header {
     }
 
     .menu-cta {
-      display: none;
+      display: block;
+      margin-top: 8px;
+      padding: 14px;
+      border-radius: 10px;
+      border-top: none;
+      background: var(--green);
+      color: #fff;
+      text-align: center;
+      font-weight: 700;
     }
   }
 }
@@ -145,15 +155,7 @@ header {
     padding: 4px 20px 20px;
 
     .menu-cta {
-      display: block;
       margin-top: 8px;
-      padding: 14px;
-      border-radius: 10px;
-      border-top: none;
-      background: var(--green-brand);
-      color: var(--navy-ink);
-      text-align: center;
-      font-weight: 700;
     }
   }
 }

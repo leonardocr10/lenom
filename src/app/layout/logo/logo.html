@@ -1,12 +1,19 @@
 <a class="logo" href="#inicio" [attr.aria-label]="label">
   <span class="symbol" aria-hidden="true"><i class="bar-v"></i><i class="bar-h"></i></span>
-  <span class="word" aria-hidden="true" (mouseleave)="reset()">
-    @for (l of letters; track l.letter; let i = $index) {
-      <span class="item" [class.active]="activeIndex() === i" (mouseenter)="activate(i)">
-        <span class="ch">{{ l.letter }}</span>
-        <span class="suffix">{{ l.word.slice(1) }}</span>
-      </span>
-    }
-    <span class="ai">.AI</span>
+  <span class="word" [class.static]="!animate()" aria-hidden="true" (mouseleave)="reset()">
+    <span class="live">
+      @for (l of letters; track l.letter; let i = $index) {
+        <span class="item" [class.active]="activeIndex() === i" (mouseenter)="activate(i)">
+          <span class="ch">{{ l.letter }}</span>
+          <span class="suffix">{{ l.word.slice(1) }}</span>
+        </span>
+      }
+      <span class="ai">.AI</span>
+    </span>
+    <!-- Reserva a largura do estado mais largo para o header não deslocar a cada ciclo. -->
+    <span class="sizer" [class.off]="!animate()">
+      <span class="ch">{{ wordmark }}</span
+      ><span class="ghost">{{ longestWord }}</span>
+    </span>
   </span>
 </a>

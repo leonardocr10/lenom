@@ -1,0 +1,59 @@
+<header class="page-head">
+  <div>
+    <h1>Minha conta</h1>
+    <p>Seus dados de acesso ao painel.</p>
+  </div>
+</header>
+
+<section class="card">
+  <h2>Dados</h2>
+  <dl>
+    <div>
+      <dt>Nome</dt>
+      <dd>{{ user()?.name }}</dd>
+    </div>
+    <div>
+      <dt>E-mail</dt>
+      <dd>{{ user()?.email }}</dd>
+    </div>
+    <div>
+      <dt>Perfil</dt>
+      <dd>{{ user()?.role === 'admin' ? 'Administrador' : 'Editor' }}</dd>
+    </div>
+  </dl>
+</section>
+
+<section class="card">
+  <h2>Trocar senha</h2>
+
+  @if (error()) {
+    <p class="alert">{{ error() }}</p>
+  }
+  @if (done()) {
+    <p class="ok">Senha alterada com sucesso.</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <label>
+      <span>Senha atual</span>
+      <input type="password" formControlName="current" autocomplete="current-password" />
+    </label>
+    <label>
+      <span>Nova senha</span>
+      <input type="password" formControlName="next" autocomplete="new-password" />
+    </label>
+    <label>
+      <span>Confirmar nova senha</span>
+      <input type="password" formControlName="confirm" autocomplete="new-password" />
+    </label>
+    <button type="submit" class="primary" [disabled]="saving()">
+      {{ saving() ? 'Salvando...' : 'Trocar senha' }}
+    </button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Sessão</h2>
+  <p class="hint">Encerra o acesso neste navegador.</p>
+  <button type="button" class="ghost" (click)="logout()">Sair do painel</button>
+</section>

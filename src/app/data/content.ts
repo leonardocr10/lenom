@@ -4,6 +4,10 @@ export interface PortfolioItem {
   tag: string;
   title: string;
   desc: string;
+  /** Módulos exibidos como chips no card em destaque. */
+  modules?: string[];
+  /** Foto de capa enviada pelo painel; sem ela o card usa a arte padrão. */
+  image?: string;
 }
 
 export interface Plan {
@@ -90,12 +94,44 @@ export interface StageProduct {
   shot: string;
 }
 
+/** Chaves de ícone resolvidas em SVG inline pelo template do orçamento. */
+export type QuoteIcon = 'bolt' | 'doc' | 'lock' | 'chat' | 'people' | 'rocket' | 'chart' | 'shield';
+
+export interface QuoteTrust {
+  icon: QuoteIcon;
+  line1: string;
+  line2: string;
+}
+
+export interface QuoteStep {
+  n: string;
+  icon: QuoteIcon;
+  title: string;
+  note: string;
+}
+
+export interface QuoteBenefit {
+  icon: QuoteIcon;
+  title: string;
+  text: string;
+}
+
 export interface Content {
   portfolio: PortfolioItem[];
   plans: Plan[];
   testimonials: Testimonial[];
   faq: FaqItem[];
   contactTopics: string[];
+  storyHeader: { eyebrow: string; title: string; titleLead: string; titleAccent: string };
+  storyIntro: string;
+  quote: {
+    plans: string[];
+    deadlines: string[];
+    budgets: string[];
+    trust: QuoteTrust[];
+    steps: QuoteStep[];
+    benefits: QuoteBenefit[];
+  };
   logoMeaning: LogoLetter[];
   nav: NavItem[];
   storyChapters: StoryChapter[];
@@ -112,6 +148,8 @@ export interface Content {
     city: string;
     cityNote: string;
     hours: string;
+    /** Link direto montado a partir de `whatsapp`; usado por todo botão de WhatsApp. */
+    whatsappUrl: string;
   };
 }
 
@@ -120,6 +158,16 @@ export const content: Content = {
     {
       tag: 'E-COMMERCE + ERP',
       title: 'Cassiano3D',
+      modules: [
+        'E-commerce',
+        'Produtos',
+        'Estoque',
+        'Compras',
+        'Fiscal',
+        'Financeiro',
+        'Marketing',
+        'Administração',
+      ],
       desc: 'Sistema completo com e-commerce, produtos, estoque, compras, fiscal, financeiro, marketing e administração.',
     },
     {
@@ -192,7 +240,7 @@ export const content: Content = {
       desc: 'Sistema pronto em nuvem, com mensalidade acessível.',
       price: 'R$ 297',
       unit: '/mês',
-      cta: 'Conhecer soluções SaaS',
+      cta: 'Conhecer o SaaS',
       features: [
         'Sistema em nuvem',
         'Atualizações',
@@ -229,6 +277,10 @@ export const content: Content = {
       a: 'Landing pages a partir de R$ 1.290 e sites institucionais a partir de R$ 2.490. O valor final depende do escopo — enviamos uma proposta detalhada, sem compromisso.',
     },
     {
+      q: 'Vocês automatizam as ferramentas que eu já uso?',
+      a: 'Sim. Integramos site, WhatsApp, e-mail, CRM e planilhas a um único motor de automação, com integrações via API — sem trocar o que já funciona.',
+    },
+    {
       q: 'Vocês desenvolvem sistemas personalizados?',
       a: 'Sim. Fazemos o levantamento de requisitos e desenvolvemos o sistema de acordo com os processos da sua empresa, com painel administrativo e controle de acesso.',
     },
@@ -245,7 +297,83 @@ export const content: Content = {
       a: 'Sim. Todos os projetos são pensados para celular, tablet e desktop desde o início.',
     },
   ],
-  contactTopics: ['Site', 'Landing Page', 'Sistema', 'E-commerce', 'Automação'],
+  contactTopics: [
+    'Site',
+    'E-commerce',
+    'Sistema',
+    'SaaS',
+    'Landing Page',
+    'Integração',
+    'Automação',
+    'Outro',
+  ],
+  storyHeader: {
+    eyebrow: 'COMO FUNCIONA',
+    title: 'Ferramentas soltas',
+    titleLead: 'viram',
+    titleAccent: 'um só fluxo.',
+  },
+  storyIntro:
+    'Leads no formulário, pedidos no WhatsApp, números na planilha — e sua equipe copiando tudo de um lugar para outro. Resolvemos isso em três etapas.',
+  quote: {
+    plans: [
+      'Ainda não sei',
+      'Landing Page — R$ 1.290',
+      'Site institucional — R$ 2.490',
+      'Sistema sob medida — R$ 6.900',
+      'Plano SaaS — R$ 297/mês',
+    ],
+    deadlines: ['Urgente', '30 dias', '60 dias', '90 dias', 'Sem prazo definido'],
+    budgets: [
+      'Até R$ 2.000',
+      'R$ 2.000–5.000',
+      'R$ 5.000–10.000',
+      'R$ 10.000–25.000',
+      'Acima de R$ 25.000',
+    ],
+    trust: [
+      { icon: 'bolt', line1: 'Resposta em', line2: 'até 1 dia útil' },
+      { icon: 'doc', line1: 'Proposta sem', line2: 'compromisso' },
+      { icon: 'lock', line1: 'Seus dados', line2: 'são protegidos' },
+    ],
+    steps: [
+      {
+        n: '1',
+        icon: 'chat',
+        title: 'Analisamos sua solicitação',
+        note: 'em até 1 dia útil.',
+      },
+      {
+        n: '2',
+        icon: 'people',
+        title: 'Agendamos uma conversa',
+        note: 'para entender os detalhes.',
+      },
+      {
+        n: '3',
+        icon: 'doc',
+        title: 'Enviamos uma proposta',
+        note: 'com escopo, prazo e investimento.',
+      },
+    ],
+    benefits: [
+      {
+        icon: 'rocket',
+        title: 'Projetos sob medida',
+        text: 'Soluções alinhadas aos seus objetivos.',
+      },
+      {
+        icon: 'chart',
+        title: 'Comunicação transparente',
+        text: 'Acompanhamento em todas as etapas.',
+      },
+      {
+        icon: 'shield',
+        title: 'Foco em resultados',
+        text: 'Tecnologia para o crescimento do seu negócio.',
+      },
+    ],
+  },
   logoMeaning: [
     {
       letter: 'L',
@@ -270,74 +398,44 @@ export const content: Content = {
   ],
   nav: [
     {
-      label: 'Soluções',
+      label: 'Como funciona',
       href: '#historia',
-    },
-    {
-      label: 'Planos e preços',
-      href: '#planos',
     },
     {
       label: 'Portfólio',
       href: '#portfolio',
     },
     {
-      label: 'Como funciona',
-      href: '#historia',
+      label: 'Planos e preços',
+      href: '#planos',
     },
     {
-      label: 'Contato',
-      href: '#contato',
+      label: 'Dúvidas',
+      href: '#faq',
     },
   ],
   storyChapters: [
     {
       n: '01',
-      eyebrow: '01 — O CENÁRIO',
-      title: 'Ferramentas soltas.',
-      titleAccent: 'Trabalho repetido.',
-      text: 'Leads no formulário, pedidos no WhatsApp, números na planilha. Sua equipe passa o dia copiando informações de um lugar para outro.',
-    },
-    {
-      n: '02',
-      eyebrow: '02 — CONECTAMOS',
-      title: 'Tudo passa a',
-      titleAccent: 'conversar.',
+      eyebrow: '01 — CONECTAMOS',
+      title: 'Conectamos',
+      titleAccent: '',
       text: 'Integramos site, WhatsApp, e-mail, CRM e planilhas a um único motor de automação, com integrações via API.',
       chips: ['Integração via API', 'Dados centralizados', 'Sem retrabalho'],
     },
     {
-      n: '03',
-      eyebrow: '03 — AUTOMATIZAMOS',
-      title: 'As tarefas acontecem',
-      titleAccent: 'sozinhas.',
+      n: '02',
+      eyebrow: '02 — AUTOMATIZAMOS',
+      title: 'Automatizamos',
+      titleAccent: '',
       text: 'Cada evento dispara um fluxo: o lead vira contato no CRM, o pedido é confirmado na hora e o relatório chega pronto na segunda de manhã.',
     },
     {
-      n: '04',
-      eyebrow: '04 — VOCÊ ACOMPANHA',
-      title: 'Visão clara do que',
-      titleAccent: 'está funcionando.',
+      n: '03',
+      eyebrow: '03 — VOCÊ ACOMPANHA',
+      title: 'Você acompanha',
+      titleAccent: '',
       text: 'Painéis e relatórios gerenciais mostram o impacto em tempo real, com perfis de acesso para cada equipe.',
-    },
-    {
-      n: '05',
-      eyebrow: '05 — CRESCEMOS JUNTOS',
-      title: 'Da automação ao',
-      titleAccent: 'sistema completo.',
-      text: 'Sites, landing pages, e-commerce e sistemas sob medida — com suporte contínuo depois da entrega.',
-      ctas: [
-        {
-          label: 'Ver planos e preços →',
-          href: '#planos',
-          variant: 'primary',
-        },
-        {
-          label: 'Ver portfólio',
-          href: '#portfolio',
-          variant: 'secondary',
-        },
-      ],
     },
   ],
   stage: {
@@ -494,5 +592,13 @@ export const content: Content = {
     city: 'São Paulo - SP',
     cityNote: 'Atendimento em todo o Brasil',
     hours: 'Segunda a sexta, das 9h às 18h',
+    whatsappUrl: '',
   },
 };
+
+/** Monta o link do WhatsApp a partir dos dígitos do número publicado. */
+export function syncWhatsappUrl(): void {
+  content.contact.whatsappUrl = `https://wa.me/55${content.contact.whatsapp.replace(/\D/g, '')}`;
+}
+
+syncWhatsappUrl();

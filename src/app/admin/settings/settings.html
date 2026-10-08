@@ -1,0 +1,169 @@
+<header class="page-head">
+  <div>
+    <h1>Textos e contato</h1>
+    <p>
+      Os blocos do site que não são listas: contato, opções do formulário e estruturas avançadas.
+    </p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button type="button" [class.on]="tab() === 'contato'" (click)="tab.set('contato')">
+    Contato
+  </button>
+  <button type="button" [class.on]="tab() === 'orcamento'" (click)="tab.set('orcamento')">
+    Formulário de orçamento
+  </button>
+  <button type="button" [class.on]="tab() === 'avancado'" (click)="tab.set('avancado')">
+    Avançado (JSON)
+  </button>
+</nav>
+
+@if (error()) {
+  <p class="alert">{{ error() }}</p>
+}
+
+@if (loading()) {
+  <p class="loading">Carregando...</p>
+} @else {
+  @switch (tab()) {
+    @case ('contato') {
+      <section class="card">
+        <h2>Dados de contato</h2>
+        <div class="grid">
+          <label>
+            <span>WhatsApp</span>
+            <input
+              [value]="contact().whatsapp"
+              (input)="setContact('whatsapp', $any($event.target).value)"
+            />
+          </label>
+          <label>
+            <span>E-mail</span>
+            <input
+              [value]="contact().email"
+              (input)="setContact('email', $any($event.target).value)"
+            />
+          </label>
+          <label>
+            <span>Cidade</span>
+            <input
+              [value]="contact().city"
+              (input)="setContact('city', $any($event.target).value)"
+            />
+          </label>
+          <label>
+            <span>Observação da cidade</span>
+            <input
+              [value]="contact().cityNote"
+              (input)="setContact('cityNote', $any($event.target).value)"
+            />
+          </label>
+          <label class="wide">
+            <span>Horário de atendimento</span>
+            <input
+              [value]="contact().hours"
+              (input)="setContact('hours', $any($event.target).value)"
+            />
+          </label>
+        </div>
+        <button
+          type="button"
+          class="primary"
+          [disabled]="saving() === 'contact'"
+          (click)="saveContact()"
+        >
+          {{ saving() === 'contact' ? 'Salvando...' : 'Salvar contato' }}
+        </button>
+      </section>
+    }
+
+    @case ('orcamento') {
+      <section class="card">
+        <h2>Tipos de projeto</h2>
+        <p class="hint">Os chips "Tipo de projeto" do formulário. Um por linha.</p>
+        <textarea
+          rows="7"
+          [value]="topics()"
+          (input)="topics.set($any($event.target).value)"
+        ></textarea>
+        <button
+          type="button"
+          class="primary"
+          [disabled]="saving() === 'contactTopics'"
+          (click)="saveTopics()"
+        >
+          {{ saving() === 'contactTopics' ? 'Salvando...' : 'Salvar tipos' }}
+        </button>
+      </section>
+
+      <section class="card">
+        <h2>Opções do formulário</h2>
+        <div class="grid">
+          <label class="wide">
+            <span>Planos de interesse (um por linha)</span>
+            <textarea
+              rows="5"
+              [value]="quotePlans()"
+              (input)="quotePlans.set($any($event.target).value)"
+            ></textarea>
+          </label>
+          <label>
+            <span>Prazos (um por linha)</span>
+            <textarea
+              rows="5"
+              [value]="quoteDeadlines()"
+              (input)="quoteDeadlines.set($any($event.target).value)"
+            ></textarea>
+          </label>
+          <label>
+            <span>Faixas de investimento (uma por linha)</span>
+            <textarea
+              rows="5"
+              [value]="quoteBudgets()"
+              (input)="quoteBudgets.set($any($event.target).value)"
+            ></textarea>
+          </label>
+        </div>
+        <button
+          type="button"
+          class="primary"
+          [disabled]="saving() === 'quote'"
+          (click)="saveQuote()"
+        >
+          {{ saving() === 'quote' ? 'Salvando...' : 'Salvar opções' }}
+        </button>
+      </section>
+    }
+
+    @case ('avancado') {
+      <p class="note">
+        Estes blocos têm estrutura aninhada e são editados como JSON. Um JSON inválido não é salvo.
+      </p>
+      @for (block of advanced(); track block.key) {
+        <section class="card">
+          <h2>{{ block.label }}</h2>
+          <textarea
+            class="code"
+            rows="12"
+            spellcheck="false"
+            [value]="block.text"
+            (input)="setAdvanced(block.key, $any($event.target).value)"
+          ></textarea>
+          <button
+            type="button"
+            class="primary"
+            [disabled]="saving() === block.key || saving() === 'quote'"
+            (click)="saveAdvanced(block.key)"
+          >
+            Salvar
+          </button>
+        </section>
+      }
+    }
+  }
+}
+
+@if (toast()) {
+  <div class="toast" role="status">{{ toast() }}</div>
+}

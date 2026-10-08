@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { content } from '../../data/content';
 
 @Component({
   selector: 'app-footer',
@@ -8,6 +7,5 @@ import { content } from '../../data/content';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Footer {
-  protected readonly contact = content.contact;
   protected readonly year = new Date().getFullYear();
 }

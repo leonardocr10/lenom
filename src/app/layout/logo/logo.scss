@@ -36,9 +36,31 @@
 }
 
 .word {
+  display: grid;
+  align-items: baseline;
+  justify-items: start;
+}
+
+.live,
+.sizer {
+  grid-area: 1 / 1;
   display: flex;
   align-items: baseline;
   white-space: nowrap;
+}
+
+.sizer {
+  visibility: hidden;
+  pointer-events: none;
+
+  &.off {
+    display: none;
+  }
+}
+
+.ghost {
+  margin-left: 4px;
+  font: 500 17px var(--font-display);
 }
 
 .item {
@@ -55,7 +77,7 @@
 
 .ch {
   color: var(--navy-brand);
-  transition: color 0.3s;
+  transition: color 0.5s;
 }
 
 .ai {
@@ -71,9 +93,9 @@
   font: 500 17px var(--font-display);
   color: var(--text-2);
   transition:
-    max-width 0.5s var(--ease),
-    opacity 0.35s ease,
-    margin 0.5s var(--ease);
+    max-width 0.9s var(--ease),
+    opacity 0.6s ease,
+    margin 0.9s var(--ease);
 }
 
 .item.active {
@@ -92,8 +114,14 @@
   }
 }
 
+/* Sem animação (painel, login) a logo é só a marca: nada expande no hover. */
+.word.static .suffix {
+  display: none;
+}
+
 @media (hover: none) {
-  .suffix {
+  .suffix,
+  .sizer {
     display: none;
   }
 }

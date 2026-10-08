@@ -1,0 +1,346 @@
+<header class="head">
+  <span class="head-ico"><app-micon name="mail" /></span>
+  <div class="head-text">
+    <h1>E-mails</h1>
+    <p>Gerencie mensagens recebidas e responda seus clientes diretamente pelo painel.</p>
+  </div>
+  <div class="head-actions">
+    <button type="button" class="primary" (click)="openCompose()">
+      <app-micon name="send" /> Enviar mensagem
+    </button>
+    <button type="button" class="ghost" (click)="sync()" [disabled]="syncing()">
+      <app-micon name="refresh" [class.spin]="syncing()" />
+      {{ syncing() ? 'Sincronizando...' : 'Sincronizar' }}
+    </button>
+    @if (isAdmin()) {
+      <a class="ghost square" routerLink="/admin/email-config" aria-label="Configurações de e-mail">
+        <app-micon name="sliders" />
+      </a>
+    }
+  </div>
+</header>
+
+@if (summary(); as s) {
+  <section class="stats">
+    <div class="stat">
+      <span class="stat-ico"><app-micon name="inbox" /></span>
+      <div>
+        <strong>Caixa de entrada</strong>
+        <b>{{ s.inbox }}</b>
+        <small>Total de mensagens</small>
+      </div>
+    </div>
+    <div class="stat">
+      <span class="stat-ico warm"><app-micon name="mail" /></span>
+      <div>
+        <strong>Não lidos</strong>
+        <b>{{ s.unread }}</b>
+        <small>Não visualizados</small>
+      </div>
+    </div>
+    <div class="stat">
+      <span class="stat-ico"><app-micon name="reply" /></span>
+      <div>
+        <strong>Respondidos</strong>
+        <b>{{ s.answered }}</b>
+        <small>Com resposta enviada</small>
+      </div>
+    </div>
+    <div class="stat">
+      <span class="stat-ico danger"><app-micon name="alert" /></span>
+      <div>
+        <strong>Spam</strong>
+        <b>{{ s.spamRemote || s.spam }}</b>
+        <small>Pasta de spam do provedor</small>
+      </div>
+    </div>
+    <div class="stat">
+      <span class="stat-ico solid" [class.off]="!s.configured || s.lastError">
+        <app-micon [name]="s.configured && !s.lastError ? 'check' : 'wifiOff'" />
+      </span>
+      <div>
+        <strong>E-mail conectado</strong>
+        @if (!s.configured) {
+          <span class="pill off">Não configurado</span>
+        } @else if (s.lastError) {
+          <span class="pill off" [title]="s.lastError">Erro na conexão</span>
+        } @else {
+          <span class="pill">Online</span>
+        }
+        <small>{{ lastSync(s) }}</small>
+      </div>
+    </div>
+  </section>
+}
+
+@if (summary()?.configured === false) {
+  <p class="notice">
+    O e-mail ainda não está configurado.
+    @if (isAdmin()) {
+      <a routerLink="/admin/email-config">Informe a senha do SMTP</a> para sincronizar e enviar.
+    } @else {
+      Peça a um administrador para configurar o SMTP.
+    }
+  </p>
+}
+
+<section class="mailbox" [class.reading]="selected()">
+  <!-- Pastas e categorias -->
+  <aside class="panel side">
+    <span class="side-title">PASTAS</span>
+    @for (f of folders; track f.view) {
+      <button type="button" class="side-item" [class.on]="view() === f.view" (click)="setView(f.view)">
+        <app-micon [name]="f.icon" />
+        <span>{{ f.label }}</span>
+        @if (summary() && f.count(summary()!) > 0) {
+          <em>{{ f.count(summary()!) }}</em>
+        }
+      </button>
+    }
+
+    <span class="side-title">CATEGORIAS</span>
+    @for (c of categories; track c.key) {
+      <button
+        type="button"
+        class="side-item"
+        [class.on]="category() === c.key"
+        (click)="setCategory(c.key)"
+      >
+        <i class="dot" [attr.data-cat]="c.key || 'todos'"></i>
+        <span>{{ c.label }}</span>
+      </button>
+    }
+  </aside>
+
+  <!-- Lista -->
+  <div class="panel list">
+    <div class="list-tools">
+      <label class="search">
+        <app-micon name="search" />
+        <input
+          placeholder="Buscar e-mails..."
+          [value]="search()"
+          (input)="onSearch($any($event.target).value)"
+        />
+      </label>
+      <select [value]="perPage()" (change)="setPerPage($any($event.target).value)" aria-label="Por página">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+    <h2>{{ viewLabel() }} <small>{{ total() }}</small></h2>
+
+    <div class="items">
+      @for (r of rows(); track r.id) {
+        <button
+          type="button"
+          class="item"
+          [class.unread]="!r.seen"
+          [class.on]="selected()?.id === r.id"
+          (click)="open(r)"
+        >
+          <span class="avatar">{{ initials(r) }}</span>
+          <span class="item-body">
+            <span class="item-top">
+              <b>{{ r.folder === 'sent' ? 'Para: ' + r.to_email : r.from_name || r.from_email }}</b>
+              <time>{{ shortDate(r.date) }}</time>
+            </span>
+            <span class="subject">
+              @if (r.answered) {
+                <app-micon name="reply" class="mini" />
+              }
+              @if (r.has_attachments) {
+                <app-micon name="clip" class="mini" />
+              }
+              {{ r.subject }}
+            </span>
+            <span class="item-bottom">
+              <span class="snippet">{{ r.snippet }}</span>
+              <span class="tag" [attr.data-cat]="r.category">{{ categoryLabel[r.category] }}</span>
+            </span>
+          </span>
+        </button>
+      } @empty {
+        <p class="empty-list">
+          {{ loading() ? 'Carregando...' : 'Nenhuma mensagem aqui.' }}
+        </p>
+      }
+    </div>
+
+    @if (pages() > 1) {
+      <div class="pager">
+        <button type="button" (click)="go(page() - 1)" [disabled]="page() === 1">‹</button>
+        <span>{{ page() }} / {{ pages() }}</span>
+        <button type="button" (click)="go(page() + 1)" [disabled]="page() === pages()">›</button>
+      </div>
+    }
+  </div>
+
+  <!-- Leitura -->
+  <article class="panel reader">
+    @if (selected(); as m) {
+      <div class="reader-bar">
+        <button type="button" class="icon-btn back" (click)="selected.set(null)" aria-label="Voltar">
+          <app-micon name="back" />
+        </button>
+        <div class="spacer"></div>
+        <select
+          class="cat-select"
+          [value]="m.category"
+          (change)="setMessageCategory($any($event.target).value)"
+          aria-label="Categoria"
+        >
+          <option value="suporte">Suporte</option>
+          <option value="contato">Contato</option>
+          <option value="orcamento">Orçamento</option>
+        </select>
+        @if (m.folder !== 'sent') {
+          <button type="button" class="icon-btn" (click)="markUnread()" title="Marcar como não lido">
+            <app-micon name="mail" />
+          </button>
+        }
+        @if (m.folder === 'inbox') {
+          <button type="button" class="icon-btn" (click)="move('archive')" title="Arquivar">
+            <app-micon name="archive" />
+          </button>
+          <button type="button" class="icon-btn" (click)="move('spam')" title="Marcar como spam">
+            <app-micon name="shield" />
+          </button>
+        }
+        @if (m.folder === 'archive' || m.folder === 'spam' || m.folder === 'trash') {
+          <button type="button" class="icon-btn" (click)="move('inbox')" title="Mover para a caixa de entrada">
+            <app-micon name="inbox" />
+          </button>
+        }
+        @if (m.folder === 'trash') {
+          <button type="button" class="icon-btn del" (click)="deleteForever()" title="Excluir de vez">
+            <app-micon name="x" />
+          </button>
+        } @else {
+          <button type="button" class="icon-btn del" (click)="move('trash')" title="Mover para a lixeira">
+            <app-micon name="trash" />
+          </button>
+        }
+      </div>
+
+      <h3>{{ m.subject }}</h3>
+      <div class="from">
+        <span class="avatar">{{ initials(m) }}</span>
+        <div>
+          <b>{{ m.from_name || m.from_email }}</b>
+          <small>{{ m.from_email }} · para {{ m.to_email }}</small>
+        </div>
+        <time>{{ fullDate(m.date) }}</time>
+      </div>
+
+      @if (m.attachments.length) {
+        <div class="attachments">
+          @for (a of m.attachments; track $index) {
+            <span><app-micon name="clip" /> {{ a }}</span>
+          }
+        </div>
+        <p class="hint">Os anexos ficam disponíveis no webmail do provedor.</p>
+      }
+
+      <iframe
+        class="body"
+        title="Conteúdo do e-mail"
+        sandbox="allow-popups allow-popups-to-escape-sandbox"
+        [srcdoc]="frameDoc()"
+      ></iframe>
+
+      @if (m.folder !== 'sent' && m.from_email) {
+        <div class="reply">
+          <div class="reply-head">
+            <app-micon name="reply" /> Responder para <b>{{ m.from_email }}</b>
+            @if (m.answered) {
+              <span class="pill">Respondido</span>
+            }
+          </div>
+          <textarea
+            rows="4"
+            placeholder="Escreva sua resposta..."
+            [value]="replyText()"
+            (input)="replyText.set($any($event.target).value)"
+          ></textarea>
+          <div class="reply-actions">
+            <button
+              type="button"
+              class="primary"
+              (click)="sendReply()"
+              [disabled]="replying() || !replyText().trim()"
+            >
+              <app-micon name="send" /> {{ replying() ? 'Enviando...' : 'Enviar resposta' }}
+            </button>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="placeholder">
+        <app-micon name="mailOpen" />
+        <strong>{{ opening() ? 'Abrindo...' : 'Selecione uma mensagem' }}</strong>
+        <span>Escolha um e-mail na lista para ler e responder.</span>
+      </div>
+    }
+  </article>
+</section>
+
+@if (composeOpen()) {
+  <div class="overlay" (click)="composeOpen.set(false)"></div>
+  <div class="modal" role="dialog" aria-label="Enviar mensagem">
+    <div class="modal-head">
+      <h3><app-micon name="send" /> Enviar mensagem</h3>
+      <button type="button" class="icon-btn" (click)="composeOpen.set(false)" aria-label="Fechar">
+        <app-micon name="x" />
+      </button>
+    </div>
+
+    @if (composeError()) {
+      <p class="alert">{{ composeError() }}</p>
+    }
+
+    <label>
+      <span>Para</span>
+      <input
+        type="email"
+        placeholder="cliente@empresa.com.br"
+        [value]="compose().to"
+        (input)="setCompose('to', $any($event.target).value)"
+      />
+    </label>
+    <label>
+      <span>Modelo</span>
+      <select [value]="compose().template" (change)="applyTemplate($any($event.target).value)">
+        <option value="">Sem modelo</option>
+        @for (t of templates(); track t.id) {
+          <option [value]="t.slug">{{ t.name }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      <span>Assunto</span>
+      <input [value]="compose().subject" (input)="setCompose('subject', $any($event.target).value)" />
+    </label>
+    <label>
+      <span>Mensagem</span>
+      <textarea
+        rows="9"
+        [value]="compose().body"
+        (input)="setCompose('body', $any($event.target).value)"
+      ></textarea>
+    </label>
+    <p class="hint">O texto é enviado dentro do layout da Lenom.AI. Troque os campos entre chaves duplas (ex.: nome) antes de enviar.</p>
+
+    <div class="modal-actions">
+      <button type="button" class="ghost" (click)="composeOpen.set(false)">Cancelar</button>
+      <button type="button" class="primary" (click)="sendCompose()" [disabled]="sending()">
+        <app-micon name="send" /> {{ sending() ? 'Enviando...' : 'Enviar' }}
+      </button>
+    </div>
+  </div>
+}
+
+@if (toast()) {
+  <div class="toast" role="status">{{ toast() }}</div>
+}

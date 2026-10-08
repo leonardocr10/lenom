@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Api, ListQuery } from '../../core/api';
 import { DataGrid, SortState } from '../ui/data-grid';
@@ -18,6 +18,7 @@ type Row = Record<string, any>;
 export class CrudPage {
   private readonly api = inject(Api);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   protected readonly config = signal<ResourceConfig>(this.read());
   protected readonly rows = signal<Row[]>([]);
@@ -55,6 +56,16 @@ export class CrudPage {
       this.filters.set({});
       this.sortState.set({ sort: config.defaultSort, dir: config.defaultDir });
       this.load();
+    });
+
+    // `?id=` abre o registro direto no editor (usado pelas notificações do painel).
+    this.route.queryParamMap.subscribe((params) => {
+      const id = Number(params.get('id'));
+      if (!id) return;
+      this.api.get<Row>(this.config().resource, id).subscribe({
+        next: (row) => this.edit(row),
+        error: () => this.flash('Registro não encontrado.'),
+      });
     });
   }
 
@@ -160,6 +171,9 @@ export class CrudPage {
   protected close(): void {
     this.editing.set(null);
     this.saving.set(false);
+    if (this.route.snapshot.queryParamMap.has('id')) {
+      this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
+    }
   }
 
   protected value(field: FormField): any {

@@ -19,6 +19,11 @@
               >
                 <span class="icon" aria-hidden="true">{{ l.icon }}</span>
                 {{ l.label }}
+                @if (l.path === '/admin/leads' && notes.pending() > 0) {
+                  <span class="count" [attr.aria-label]="notes.pending() + ' novas'">{{
+                    notes.pending()
+                  }}</span>
+                }
               </a>
             }
           }
@@ -35,6 +40,66 @@
         ☰
       </button>
       <div class="spacer"></div>
+
+      <div class="bell-wrap">
+        <button
+          type="button"
+          class="bell"
+          [class.ring]="notes.hasUnread()"
+          (click)="toggleBell()"
+          [attr.aria-expanded]="bellOpen()"
+          [attr.aria-label]="
+            notes.unread() ? notes.unread() + ' notificações novas' : 'Notificações'
+          "
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"
+            />
+          </svg>
+          @if (notes.unread() > 0) {
+            <span class="badge">{{ notes.unread() > 9 ? '9+' : notes.unread() }}</span>
+          }
+        </button>
+
+        @if (bellOpen()) {
+          <div class="bell-panel" role="dialog" aria-label="Notificações">
+            <div class="bell-head">
+              <strong>Notificações</strong>
+              @if (notes.pending() > 0) {
+                <span class="pill">{{ notes.pending() }} aguardando</span>
+              }
+            </div>
+
+            @if (notes.latest().length) {
+              <ul>
+                @for (n of notes.latest(); track n.id) {
+                  <li>
+                    <button type="button" [class.fresh]="n.id > seenBefore()" (click)="openLead(n)">
+                      <span class="dot"></span>
+                      <span class="txt">
+                        <span class="line"
+                          ><b>{{ n.name }}</b> enviou uma solicitação</span
+                        >
+                        <small
+                          >{{ n.company || n.plan || 'Formulário do site' }} ·
+                          {{ timeAgo(n.created_at) }}</small
+                        >
+                      </span>
+                    </button>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="empty">Nenhuma solicitação ainda.</p>
+            }
+
+            <a class="all" routerLink="/admin/leads" (click)="bellOpen.set(false)"
+              >Ver todas as solicitações →</a
+            >
+          </div>
+        }
+      </div>
       <div class="who">
         <span class="avatar">{{ initials() }}</span>
         <div class="who-text">
@@ -51,4 +116,19 @@
   </div>
 
   <div class="scrim" (click)="menuOpen.set(false)"></div>
+
+  @if (notes.toast(); as t) {
+    <div class="note-toast" role="status">
+      <button type="button" class="note-body" (click)="openLead(t)">
+        <span class="note-ico">✉</span>
+        <span>
+          <strong>Nova solicitação</strong>
+          <small>{{ t.name }}{{ t.company ? ' · ' + t.company : '' }}</small>
+        </span>
+      </button>
+      <button type="button" class="note-x" (click)="notes.dismissToast()" aria-label="Fechar">
+        ×
+      </button>
+    </div>
+  }
 </div>

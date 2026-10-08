@@ -1,0 +1,284 @@
+<header class="head">
+  <span class="head-ico"><app-micon name="mail" /></span>
+  <div>
+    <h1>Configurações de e-mail</h1>
+    <p>Servidor de envio, modelos de e-mail e histórico de tudo que o painel enviou.</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button type="button" [class.on]="tab() === 'templates'" (click)="setTab('templates')">
+    Templates de e-mails
+  </button>
+  <button type="button" [class.on]="tab() === 'historico'" (click)="setTab('historico')">
+    Histórico de envios
+  </button>
+  <button type="button" [class.on]="tab() === 'smtp'" (click)="setTab('smtp')">
+    Configurações SMTP
+  </button>
+</nav>
+
+@switch (tab()) {
+  @case ('smtp') {
+    @if (config(); as c) {
+      <section class="card">
+        <div class="card-head">
+          <span class="card-ico"><app-micon name="mail" /></span>
+          <div>
+            <h2>Servidor de envio (SMTP)</h2>
+            <p>Único lugar para configurar o envio: respostas, mensagens avulsas, avisos de solicitação e testes.</p>
+          </div>
+          <span class="status" [class.off]="!c.hasPass">{{ c.hasPass ? 'Configurado' : 'Falta a senha' }}</span>
+        </div>
+
+        @if (error()) {
+          <p class="alert">{{ error() }}</p>
+        }
+
+        <label class="check-row">
+          <input type="checkbox" [checked]="c.enabled" (change)="set('enabled', $any($event.target).checked)" />
+          <span>Ativar envio de e-mail</span>
+        </label>
+
+        <div class="grid two">
+          <label>
+            <span>Servidor SMTP</span>
+            <input [value]="c.host" (input)="set('host', $any($event.target).value)" />
+          </label>
+          <label>
+            <span>Porta</span>
+            <input type="number" [value]="c.port" (input)="setPort($any($event.target).value)" />
+          </label>
+        </div>
+
+        <label class="check-row">
+          <input type="checkbox" [checked]="c.secure" (change)="set('secure', $any($event.target).checked)" />
+          <span>Conexão segura (TLS/SSL)</span>
+          <small>Porta 587 costuma usar STARTTLS, normalmente com esta opção desligada. Porta 465 usa TLS/SSL direto.</small>
+        </label>
+
+        <label>
+          <span>Usuário</span>
+          <input [value]="c.user" (input)="set('user', $any($event.target).value)" autocomplete="off" />
+        </label>
+
+        <label>
+          <span>Senha</span>
+          <input
+            type="password"
+            autocomplete="new-password"
+            [placeholder]="c.hasPass ? 'Senha salva (deixe em branco para manter)' : 'Senha da conta de e-mail'"
+            [value]="c.pass ?? ''"
+            (input)="set('pass', $any($event.target).value)"
+          />
+          <small>A senha salva nunca é exibida de volta. Preencha só para substituí-la.</small>
+        </label>
+
+        <div class="grid two">
+          <label>
+            <span>Nome do remetente</span>
+            <input [value]="c.fromName" (input)="set('fromName', $any($event.target).value)" />
+          </label>
+          <label>
+            <span>E-mail do remetente</span>
+            <input type="email" [value]="c.fromEmail" (input)="set('fromEmail', $any($event.target).value)" />
+          </label>
+        </div>
+
+        <h3 class="sub"><app-micon name="inbox" /> Recebimento (IMAP)</h3>
+        <p class="note">Usado pela tela de E-mails para baixar a caixa de entrada e o spam. Usa o mesmo usuário e senha.</p>
+        <div class="grid three">
+          <label>
+            <span>Servidor IMAP</span>
+            <input [value]="c.imapHost" (input)="set('imapHost', $any($event.target).value)" />
+          </label>
+          <label>
+            <span>Porta</span>
+            <input type="number" [value]="c.imapPort" (input)="set('imapPort', +$any($event.target).value)" />
+          </label>
+          <label class="check-row inline">
+            <input type="checkbox" [checked]="c.imapSecure" (change)="set('imapSecure', $any($event.target).checked)" />
+            <span>SSL (993)</span>
+          </label>
+        </div>
+
+        <h3 class="sub"><app-micon name="alert" /> Avisos de novas solicitações</h3>
+        <label>
+          <span>Enviar avisos para</span>
+          <input
+            type="email"
+            [placeholder]="c.fromEmail || 'equipe@empresa.com.br'"
+            [value]="c.notifyTo"
+            (input)="set('notifyTo', $any($event.target).value)"
+          />
+          <small>Em branco, os avisos vão para o e-mail do remetente.</small>
+        </label>
+
+        <p class="note">Salve antes de testar: os testes usam a configuração salva.</p>
+
+        <div class="actions">
+          <button type="button" class="primary" (click)="save()" [disabled]="saving()">
+            {{ saving() ? 'Salvando...' : 'Salvar configurações' }}
+          </button>
+          <button type="button" class="outline" (click)="testConnection()" [disabled]="testing()">
+            {{ testing() ? 'Testando...' : 'Testar conexão' }}
+          </button>
+        </div>
+
+        @if (testResult(); as r) {
+          <div class="results">
+            <span [class.bad]="r.smtp !== 'ok'">
+              <app-micon [name]="r.smtp === 'ok' ? 'check' : 'x'" />
+              SMTP: {{ r.smtp === 'ok' ? 'conectado' : r.smtp }}
+            </span>
+            <span [class.bad]="r.imap !== 'ok'">
+              <app-micon [name]="r.imap === 'ok' ? 'check' : 'x'" />
+              IMAP: {{ r.imap === 'ok' ? 'conectado' : r.imap }}
+            </span>
+          </div>
+        }
+
+        <label class="test">
+          <span>Enviar e-mail de teste para</span>
+          <div class="test-row">
+            <input
+              type="email"
+              placeholder="seu@email.com"
+              [value]="testTo()"
+              (input)="testTo.set($any($event.target).value)"
+            />
+            <button type="button" class="primary" (click)="sendTest()" [disabled]="sendingTest() || !testTo().trim()">
+              {{ sendingTest() ? 'Enviando...' : 'Enviar teste' }}
+            </button>
+          </div>
+        </label>
+      </section>
+    } @else {
+      <p class="loading">Carregando...</p>
+    }
+  }
+
+  @case ('templates') {
+    <section class="templates">
+      @for (t of templates(); track t.id) {
+        <article class="card tpl">
+          <div class="card-head">
+            <span class="card-ico"><app-micon name="doc" /></span>
+            <div>
+              <h2>{{ t.name }}</h2>
+              <p>{{ t.description }}</p>
+            </div>
+            <label class="switch" [title]="t.active ? 'Ativo' : 'Desativado'">
+              <input type="checkbox" [checked]="!!t.active" (change)="toggleTemplate(t)" />
+              <span>{{ t.active ? 'Ativo' : 'Desativado' }}</span>
+            </label>
+          </div>
+          <div class="tpl-subject"><b>Assunto:</b> {{ t.subject }}</div>
+          <pre class="tpl-body">{{ t.body }}</pre>
+          <div class="actions">
+            <button type="button" class="outline" (click)="edit(t)">Editar template</button>
+          </div>
+        </article>
+      }
+    </section>
+  }
+
+  @case ('historico') {
+    <section class="card">
+      <div class="card-head">
+        <span class="card-ico"><app-micon name="clock" /></span>
+        <div>
+          <h2>Histórico de envios</h2>
+          <p>{{ logTotal() }} envio(s) registrados, incluindo os que falharam.</p>
+        </div>
+        <select class="filter" [value]="logStatus()" (change)="setLogStatus($any($event.target).value)">
+          <option value="">Todos</option>
+          <option value="enviado">Enviados</option>
+          <option value="falhou">Com falha</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Para</th>
+              <th>Assunto</th>
+              <th>Origem</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (l of logRows(); track l.id) {
+              <tr>
+                <td class="nowrap">{{ date(l.created_at) }}</td>
+                <td>{{ l.to_email }}</td>
+                <td>
+                  {{ l.subject }}
+                  @if (l.error) {
+                    <small class="err">{{ l.error }}</small>
+                  }
+                </td>
+                <td class="nowrap">{{ templateName(l.template) }}</td>
+                <td>
+                  <span class="badge" [class.bad]="l.status === 'falhou'">{{ l.status === 'falhou' ? 'Falhou' : 'Enviado' }}</span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty">Nenhum envio ainda.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (logPages() > 1) {
+        <div class="pager">
+          <button type="button" (click)="goLog(logPage() - 1)" [disabled]="logPage() === 1">‹</button>
+          <span>{{ logPage() }} / {{ logPages() }}</span>
+          <button type="button" (click)="goLog(logPage() + 1)" [disabled]="logPage() === logPages()">›</button>
+        </div>
+      }
+    </section>
+  }
+}
+
+@if (editing(); as t) {
+  <div class="overlay" (click)="editing.set(null)"></div>
+  <div class="modal" role="dialog" aria-label="Editar template">
+    <h3>Editar template</h3>
+    <label>
+      <span>Nome</span>
+      <input [value]="t.name" (input)="setTemplate('name', $any($event.target).value)" />
+    </label>
+    <label>
+      <span>Assunto</span>
+      <input [value]="t.subject" (input)="setTemplate('subject', $any($event.target).value)" />
+    </label>
+    <label>
+      <span>Mensagem</span>
+      <textarea rows="12" [value]="t.body" (input)="setTemplate('body', $any($event.target).value)"></textarea>
+    </label>
+    @if (vars[t.slug]; as list) {
+      <div class="vars">
+        <span>Variáveis:</span>
+        @for (v of list; track v) {
+          <code>{{ '{' }}{{ '{' }}{{ v }}{{ '}' }}{{ '}' }}</code>
+        }
+      </div>
+    }
+    <p class="note">Escreva em texto simples: o envio aplica o layout da Lenom.AI automaticamente.</p>
+    <div class="actions end">
+      <button type="button" class="outline" (click)="editing.set(null)">Cancelar</button>
+      <button type="button" class="primary" (click)="saveTemplate()" [disabled]="savingTemplate()">
+        {{ savingTemplate() ? 'Salvando...' : 'Salvar template' }}
+      </button>
+    </div>
+  </div>
+}
+
+@if (toast()) {
+  <div class="toast" role="status">{{ toast() }}</div>
+}

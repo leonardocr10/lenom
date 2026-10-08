@@ -7,6 +7,7 @@ import { db, UPLOAD_DIR, saveSetting, setting, SETTING_KEYS } from './db.js';
 import { getOne, insert, listQuery, pick, remove, update } from './crud.js';
 import { expand, resources } from './resources.js';
 import { hash, requireAdmin, requireAuth, signIn } from './auth.js';
+import { mailRouter, notifyLead } from './mail.js';
 
 const MAX_UPLOAD = 5 * 1024 * 1024;
 
@@ -109,6 +110,7 @@ router.post('/leads', upload.single('file'), (req, res) => {
     media_id: mediaId,
   });
 
+  notifyLead(lead);
   res.status(201).json({ id: lead.id });
 });
 
@@ -180,6 +182,7 @@ router.get('/admin/stats', requireAuth, (_req, res) => {
  * ------------------------------------------------------------------ */
 
 router.use('/admin', requireAuth);
+router.use('/admin/mail', mailRouter);
 
 /* ------------------------------------------------------------------ *
  * Painel — uploads e blocos de texto
@@ -194,6 +197,21 @@ router.post('/admin/media/upload', upload.single('file'), (req, res) => {
     size: req.file.size,
   });
   res.status(201).json(row);
+});
+
+/** Sino do painel: últimas solicitações e quantas chegaram depois de `after` (último id visto). */
+router.get('/admin/notifications', (req, res) => {
+  const after = Number(req.query.after) || 0;
+  res.json({
+    unread: db.prepare('SELECT COUNT(*) AS c FROM leads WHERE id > ?').get(after).c,
+    pending: db.prepare("SELECT COUNT(*) AS c FROM leads WHERE status = 'novo'").get().c,
+    lastId: db.prepare('SELECT COALESCE(MAX(id), 0) AS id FROM leads').get().id,
+    latest: db
+      .prepare(
+        'SELECT id, name, company, plan, status, created_at FROM leads ORDER BY id DESC LIMIT 8',
+      )
+      .all(),
+  });
 });
 
 router.get('/admin/settings/:key', (req, res) => {

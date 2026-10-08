@@ -3,6 +3,7 @@ import cors from 'cors';
 import { join } from 'node:path';
 import { UPLOAD_DIR } from './db.js';
 import { router } from './routes.js';
+import { startAutoSync } from './mail.js';
 
 const PORT = Number(process.env.PORT) || 3333;
 const app = express();
@@ -29,4 +30,5 @@ app.use((err, _req, res, _next) => {
   res.status(status).json({ error: message });
 });
 
+startAutoSync();
 app.listen(PORT, () => console.log(`[api] http://localhost:${PORT}/api`));

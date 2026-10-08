@@ -8,11 +8,19 @@ const adminGuard = () => {
   return auth.isLogged ? true : inject(Router).createUrlTree(['/admin/login']);
 };
 
+const adminOnly = () =>
+  inject(Auth).user()?.role === 'admin' ? true : inject(Router).createUrlTree(['/admin']);
+
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./pages/landing/landing').then((m) => m.Landing),
     title: 'Lenom.AI — Sites, sistemas e automação',
+  },
+  {
+    path: 'privacidade',
+    loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),
+    title: 'Política de Privacidade — Lenom.AI',
   },
   {
     path: 'admin/login',
@@ -34,6 +42,18 @@ export const routes: Routes = [
         loadComponent: () => import('./admin/crud/crud-page').then((m) => m.CrudPage),
         data: { resource: 'leads' },
         title: 'Solicitações — Lenom.AI',
+      },
+      {
+        path: 'emails',
+        loadComponent: () => import('./admin/emails/emails').then((m) => m.EmailsPage),
+        title: 'E-mails — Lenom.AI',
+      },
+      {
+        path: 'email-config',
+        canActivate: [adminOnly],
+        loadComponent: () =>
+          import('./admin/email-config/email-config').then((m) => m.EmailConfigPage),
+        title: 'Configurações de e-mail — Lenom.AI',
       },
       {
         path: 'planos',
